@@ -1,0 +1,52 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+require 5.010;
+
+# Do some perl operation on a bunch of files, editing those files in place.
+
+if (($ARGV[0] eq "") || ($ARGV[1] eq "")) {
+    print "Usage: replace perlexpr file [file ...]\n";
+    exit(1);
+}
+
+my $op = shift;
+my $i = 0;
+foreach $i (0 .. $#ARGV) {
+    print "Argument ", $i, " = ==>", $ARGV[$i], "<==\n";
+}
+
+print "Applying '$op' to\n";
+print "@ARGV\n";
+
+foreach $i (0 .. $#ARGV) {
+    my $filename = $ARGV[$i];
+    my $filenamebak = $filename . ".bak";
+    if (-d $filename) {
+		print "Cannot process directory $filename\n";
+		next;
+    }
+
+    # rename the file to .bak
+    if (!rename ($filename, $filenamebak)) {
+		die "Cannot backup $filename : $!";
+	exit(1);
+    }
+
+    # open the new .bak file for input
+    if (!open(INPUT, $filenamebak)) {
+		die "Cannot open $filenamebak : $!";
+    }
+	binmode INPUT;
+	
+    # and prepare to write modified contents to the original filename
+    open(OUTPUT, "> $filename");
+	binmode OUTPUT;
+	
+    # do the write
+    while (<INPUT>) {
+		#chomp $_;
+		eval $op;
+		print OUTPUT $_;
+    }
+}
