@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Replace <<, >>, <, and > with real quotation marks
+# Replace <<, >>, <, and > with simple straight quotation marks
 
 # Double quotation marks...must do first
 replace 's/<</\"/g' *.usfm
