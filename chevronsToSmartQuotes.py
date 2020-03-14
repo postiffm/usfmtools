@@ -40,7 +40,7 @@ for file in sys.argv:
 	fo = io.open(file, mode="w", encoding="utf-8")
 
 	for cnt, line in enumerate(fi):
-		print("Working on " + line)
+		#print("Working on " + line)
 		line = re.sub("<<", "\u201c", line, count=0)
 		line = re.sub(">>", "\u201d", line, count=0)
 		line = re.sub("<",  "\u2018", line, count=0)
