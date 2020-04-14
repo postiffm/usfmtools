@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# Clean up old book listing
+rm bookReport.txt
+
 # For loop #1
-for f in 'Akha' 'Bualkhaw Chin NT' 'Chakma NT' 'Chiru NT' 'Dagaara NT' 'Dagba NT' 'Darlong Bible' 'Day NT' 'Dendi NT' 'Falam Bible' 'Haitian Creole NT Ps Pr' 'Hakha Chin NT' 'Inner Seraji NT' 'Inpui Naga NT' 'Kabiye NT' 'Kaulong NT' 'Koyra Ciini Songhay' 'Lamkaang NT' 'Luxembourgish NT' 'Manipuri Bible' 'Mizo LUS NT' 'Sara Ngam NT' 'Quechua NT' 'Ranglong NT' 'Rito NT' 'Sango' 'Sara Kaba Deme Bible' 'Sara Kaba Naa NT' 'Sara Madjingaye Bible' 'Simte NT Ps Pv' 'Tenek' 'Tumak' 'Waali Bible' 'Warao Bible' 'Zarma Bible' 'Zokam NT' 'Zotung Chin NT' 'Neao Bible' 'Kaowlu NT'
+for f in 'Akha' 'Bualkhaw Chin NT' 'Chakma NT' 'Chiru NT' 'Dagaara NT' 'Dagba NT' 'Darlong Bible' 'Day NT' 'Dendi NT' 'Falam Bible' 'Haitian Creole NT Ps Pr' 'Hakha Chin NT' 'Inner Seraji NT' 'Inpui Naga NT' 'Kabiye NT' 'Kaulong NT' 'Koyra Ciini Songhay' 'Lamkaang NT' 'Luxembourgish NT' 'Manipuri Bible' 'Mizo LUS NT' 'Sara Ngam NT' 'Quechua NT' 'Ranglong NT' 'Rito NT' 'Sango' 'Sara Kaba Deme Bible' 'Sara Kaba Naa NT' 'Sara Madjingaye Bible' 'Simte NT Ps Pv' 'Tenek' 'Tumak' 'Waali Bible' 'Warao Bible' 'Zarma Bible' 'Zokam NT' 'Zotung Chin NT' 'Neao Bible' 'Kaowlu NT' 'Kabiye NT'
 do
 
 # For loop #2...inside loop #1
@@ -30,8 +33,15 @@ then
     cd "$f/$d"
     pwd
     grep '\\rq' usfm.xrefreport
-     #| grep -v '\\rq*'
+    #| grep -v '\\rq*'
+
+    echo "-----------------------------------" >> ../../bookReport.txt
+    echo "$f $d" >> ../../bookReport.txt
+    grep '\\toc1' *.SFM *.usfm >> ../../bookReport.txt
+    grep '\\mt' *.SFM *.usfm >> ../../bookReport.txt
+
     cd ../..
+
     # Because I look at the latest version of usfm first, this saves us
     # irrelevant work.
     break
