@@ -4,6 +4,8 @@ use warnings;
 require 5.010;
 
 # Do some perl operation on a bunch of files, editing those files in place.
+#
+# Usage: replace 's/\\x -/\\x +/g' *.SFM
 
 if (($ARGV[0] eq "") || ($ARGV[1] eq "")) {
     print "Usage: replace perlexpr file [file ...]\n";
