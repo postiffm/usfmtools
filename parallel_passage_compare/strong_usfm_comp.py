@@ -1,5 +1,6 @@
 import os
 import xml.etree.ElementTree as ET
+import re
 
 def load_strong_usfm(filename):
     #returns compound array where first index is chapter,
@@ -8,7 +9,9 @@ def load_strong_usfm(filename):
     lines = book.readlines()
     book_arr = []
     chapter_arr = []
+    reg_pat = re.compile(r"\\f .*?\\f\*")
     for line in lines:
+        line = reg_pat.sub('',line)
         if line[1] == "c":
             #print("chapter")
             book_arr.append(chapter_arr)
