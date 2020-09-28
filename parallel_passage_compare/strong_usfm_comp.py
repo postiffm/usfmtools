@@ -69,11 +69,11 @@ def load_nt():
 def do_comparison(comp1,comp2):
     comp_result = ""
     
-    exact_open = '<span style="background-color:green">'
+    exact_open = '<span class="g">' # green
     exact_close = "</span>"
-    root_open = '<span style="background-color:yellow">'
+    root_open = '<span class="y">'  # yellow
     root_close = "</span>"
-    sorta_open = '<span style="background-color:orange">'
+    sorta_open = '<span class="o">' # orange
     sorta_close = "</span>"
     
     for word in comp1:
@@ -149,11 +149,17 @@ def do_comparisons(verse1,comp1,verse2,comp2,verse3 = '',comp3=[],verse4 = '',co
     return html
 
 ###MAIN
-folder = "D:\\Documents\\Strong_USFMs\\"
+folder = "./"
 bible = load_nt()
 all_parallels = ET.parse(folder + "nt-parallel-passages.xml")
 root = all_parallels.getroot()
 html = '''<html>
+  <head>
+    <style>
+      span.g { background-color:green; }
+      span.y { background-color:yellow; }
+      span.o { background-color:orange; }
+    </style>      
 <table style="width:100%" border="1" width="200px" height="auto">
 '''
 for section in root:
