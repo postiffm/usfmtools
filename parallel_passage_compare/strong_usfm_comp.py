@@ -159,8 +159,19 @@ html = '''<html>
       span.g { background-color:green; }
       span.y { background-color:yellow; }
       span.o { background-color:orange; }
-    </style>      
-<table style="width:100%" border="1" width="200px" height="auto">
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+      td {
+        width=200px; 
+        border: 1px solid black;
+      }
+      th { border: 
+        border: none; /* 1px solid black;*/
+        border-collapse: collapse; }
+    </style> 
+<table>
 '''
 for section in root:
     html = html + '''  <tr>
