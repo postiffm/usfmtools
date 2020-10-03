@@ -18,7 +18,8 @@ import click
 import re
 from operator import itemgetter
 
-def get_repeatseq_simple(in_file, sequencelength:int):
+# Find all phrases of length=sequencelength, repeated more than once,from in_file
+def find_repeated_phrases(in_file, sequencelength:int):
     """Indexes the entire text in a massive dictionary. Finds duplicates"""
     wordlist = []
     file = open(in_file,'r')
@@ -78,7 +79,8 @@ def get_repeatseq_simple(in_file, sequencelength:int):
             locDict[idxStr]=locDict.get(idxStr,"")+" "+book+" "+chapter+":"+verse
             # To do: add smarts to do various lengths; print at end so don't get repeats; don't avoid repeats; 
 
-    # Print a summary of the information and create a clean copy
+    # Print a summary of the information and create a clean copy with only repeated phrases in it.
+    # This will be much smaller than the working copy.
     print("Found " + str(wordCnt) + " words in the text")
     print("Size of repeated phrase dictionary is " + str(len(seqDict)))
     for key in seqDict:
@@ -87,7 +89,7 @@ def get_repeatseq_simple(in_file, sequencelength:int):
             print(str(count) + " " + key + " " + locDict[key])
             seqDictCleaned[key] = count;
 
-    print("Size of repeated phrase dictionary is " + str(len(seqDictCleaned)))
+    #print("Size of repeated phrase dictionary is " + str(len(seqDictCleaned)))
     return seqDictCleaned
 
 @click.command()
@@ -96,11 +98,17 @@ def get_repeatseq_simple(in_file, sequencelength:int):
 @click.argument("min_sequencelength", type=int)
 @click.argument("max_sequencelength", type=int)
 def main(in_file, out_file, min_sequencelength, max_sequencelength):
+    # Load repeated phrases of all the lengths requested
     rpDicts = [dict() for x in range (0, max_sequencelength+1)]
     for i in range(max_sequencelength, min_sequencelength-1, -1):
         print("\nFind repeated phrases of " +str(i) + " words...")
-        rpDicts[i] = get_repeatseq_simple(in_file, i)
+        rpDicts[i] = find_repeated_phrases(in_file, i)
         print("Size of repeated phrase dictionary is " + str(len(rpDicts[i])))
+    
+    # Clean out smaller phrases that are found in larger phrases
+    
+
+    # Print out all repeated phrases
 
 if __name__ == '__main__':
     main()
