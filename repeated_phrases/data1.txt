@@ -1,6 +1,7 @@
 This is a sample data file that is 
 small.
-The data file is meant to test the repeated_phrase tool.
+The data file is meant to test the repeated_phrase.py tool.
+Or the repeate_simple.py tool.
 As a sample data file, that is small.
 As a sample data file that is small
 It obviously has a few purposeful repeated phrases purposeful repeated phrases.
