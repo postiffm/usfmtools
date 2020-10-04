@@ -14,9 +14,22 @@
 
 # Question: how much of the Bible is covered by these phrases?
 
+import copy
 import click
 import re
 from operator import itemgetter
+
+# Class that contains the necessary tracking information about a repeated-phrase
+class RepeatedPhrase:
+    def __init__(self, count):
+        self.count = count
+        self.locations = []
+
+    def increment(self):
+        self.count = self.count + 1
+
+    def addLocation(self, loc):
+        self.locations.append(loc)
 
 # Find all phrases of length=sequencelength, repeated more than once,from in_file
 def find_repeated_phrases(in_file, sequencelength:int):
@@ -26,7 +39,8 @@ def find_repeated_phrases(in_file, sequencelength:int):
     seqDict = {}
     seqDictCleaned = {}
     locDict = {}
-    wordCnt = 0
+    wordCnt = 0;
+
     for line in file:
         # Ignore blank lines
         if not line.strip():
@@ -47,7 +61,6 @@ def find_repeated_phrases(in_file, sequencelength:int):
         else:
             words.pop(0) # remove \v
             verse = words.pop(0) # remove verse number
-        wordCnt += len(words)
 
         #print(' '.join(words))
 
@@ -61,6 +74,7 @@ def find_repeated_phrases(in_file, sequencelength:int):
             # wordlist is a moving window on the list of words, always keeping it
             # sequencelength words long. We look at each new window and compare it to
             # the other windows we have seen, stored in a fancy dictionary.
+            wordCnt = wordCnt + 1
             wordlist.append(word)
             if (len(wordlist) > sequencelength):
                 wordlist.pop(0)
@@ -72,10 +86,13 @@ def find_repeated_phrases(in_file, sequencelength:int):
             # Have we see this sequence of words before?
             # First convert the wordlist to a string to use it to index a dictionary
             idxStr = ' '.join(wordlist)
-            count = seqDict.get(idxStr, 0);
+            rephrase = seqDict.get(idxStr, RepeatedPhrase(0));
+            rephrase.increment()
+            rephrase.addLocation(wordCnt)
+            #print("inc=" + str(rephrase.count) + " loc=" + str(rephrase.locations))
             #if (count >= 1):
             #    print("We have a repeated phrase: " + ' '.join(wordlist))
-            seqDict[idxStr]=count+1
+            seqDict[idxStr]=rephrase  # don't have to do copy.deepcopy here...RepeatedPhrase() above creates the new object
             locDict[idxStr]=locDict.get(idxStr,"")+" "+book+" "+chapter+":"+verse
             # To do: add smarts to do various lengths; print at end so don't get repeats; don't avoid repeats; 
 
@@ -84,10 +101,10 @@ def find_repeated_phrases(in_file, sequencelength:int):
     print("Found " + str(wordCnt) + " words in the text")
     print("Size of repeated phrase dictionary is " + str(len(seqDict)))
     for key in seqDict:
-        count = seqDict[key]
-        if (count > 1):
-            print(str(count) + " " + key + " " + locDict[key])
-            seqDictCleaned[key] = count;
+        rephrase = seqDict[key]
+        if (rephrase.count > 1):
+            print(str(rephrase.count) + "--" + key + "--" + locDict[key] + "--" + str(rephrase.locations))
+            seqDictCleaned[key] = rephrase;
 
     #print("Size of repeated phrase dictionary is " + str(len(seqDictCleaned)))
     return seqDictCleaned
@@ -103,10 +120,15 @@ def main(in_file, out_file, min_sequencelength, max_sequencelength):
     for i in range(max_sequencelength, min_sequencelength-1, -1):
         print("\nFind repeated phrases of " +str(i) + " words...")
         rpDicts[i] = find_repeated_phrases(in_file, i)
-        print("Size of repeated phrase dictionary is " + str(len(rpDicts[i])))
+        #print("Size of repeated phrase dictionary is " + str(len(rpDicts[i])))
     
     # Clean out smaller phrases that are found in larger phrases
-    
+    # Algorithm is to start with the smallest phrases and work up 
+    # toward the larger ones. So if a 2-word phrase--the exact
+    # 2-word phrase--is found in a 3-word phrase, then we can 
+    # remove it from consideration. We have to keep track of
+    # word indexes in order for this to work, which adds some
+    # complexity to the data structure and adds tracking code.
 
     # Print out all repeated phrases
 
