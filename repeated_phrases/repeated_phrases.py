@@ -101,7 +101,7 @@ def get_repeatseq_KJV(in_file, min_sequencelength, max_sequencelength, bible, re
                 lastadded = 0
             lasts[lastadded] = word
 
-# MAP: Just learning Jon's algorithm by simplifying it to its core pieces
+# MAP: Just learning Jon's algorithm by simplifying it to its core pieces...never finished.
 def get_repeatseq_simple(in_file, min_sequencelength, max_sequencelength, bible, repeat_seq):
     """Indexes the entire text in a massive dictionary. Finds duplicates"""
     # bible is a dictionary {}
