@@ -7,12 +7,8 @@
 # pip3 install 'click'
 
 # Usage:
-# python3 ./repeat_simple.py data1.txt out1.txt 3 8
-# python3 ./repeat_simple.py ../../bibles/byzusfm/40_Matthew.usfm out2.txt 5 5
-
-# # Reads in the Project Gutenberg KJV in pg10.txt, puts output to out1, and finds phrases of length >= 5
-
-# Question: how much of the Bible is covered by these phrases?
+# python3 repeat_simple.py test1.usfm 2 5  > test1.html
+# python3 repeat_simple.py byznt.usfm 5 45 > repeats.html
 
 import copy
 import click
@@ -23,10 +19,10 @@ import functools
 # Class that contains the necessary tracking information about a repeated-phrase
 class RepeatedPhrase:
     def __init__(self, count):
-        self.count = count
-        self.locations = []
-        self.endVerses = []
-        self.length = 0
+        self.count = count    # How many times it occurs
+        self.locations = []   # Where it is found (word count as an index)
+        self.endVerses = []   # Where the phrase ends (book ch:vs)
+        self.length = 0       # How many words long it is
 
     def increment(self):
         self.count = self.count + 1
@@ -54,7 +50,7 @@ def my_add(lis):
         if (x != -1): result = result + 1
     return result
 
-# Find all phrases of length=sequencelength, repeated more than once,from in_file
+# Find all phrases of length=sequencelength, repeated more than once, from in_file
 def find_repeated_phrases(in_file, sequencelength:int):
     """Scans the entire text using a "window" and finds duplicates and stores in dictionary"""
     wordlist = []
