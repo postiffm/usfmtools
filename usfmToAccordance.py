@@ -7,25 +7,30 @@
 # To run this script on Ubuntu or WSL (Bash on Ubuntu on Windows = Windows Subsystem on Linux), do this:
 # sudo apt install python3-pip
 # pip3 install 'click'
+# pip3 install regex
 
 # Usage:
 # python3 usfmToAccordance.py test1.usfm > test1.txt
 
 import copy
 import click
-import re
+#import re
+import regex
 from operator import itemgetter
 import functools
 
 # Find all phrases of length=sequencelength, repeated more than once, from in_file
 def convertUSFMToAccordance(filename):
     """Scans the entire USFM and re-formats for Accordance"""
-    # Modes that the usfm scanner is in
-    NORMAL = 0
-    MARKER = 1
-    PREFIX = 2
+    # Modes that the usfm scanner is in (parsing mode)
+    NORMAL = 0 # regular Bible text
+    MARKER = 1 # USFM marker
+    PREFIX = 2 # file header info
     mode = PREFIX
     usfmCode = ""
+    markerPattern = r'\\(\S+)'
+    markerPatternCompiled = regex.compile(markerPattern) # looking for a usfm \marker
+    markersToIgnore = ['li', 'q1', 'm']
     # The current word list
     wordlist = []
     file = open(filename,'r')
@@ -35,38 +40,42 @@ def convertUSFMToAccordance(filename):
         if not line.strip():
             continue;
 
-        print("DEBUG: " + line, end='')
+        #print("DEBUG1: " + line, end='')
 
         # Disregard line/verse boundaries so that repeats can cross lines/verses
         words = line.split()
 
-        # Handle USFM codes (by dropping them out)
+        # Handle USFM codes (by noting them or dropping them)
         while words:
             word = words.pop(0)
-            print("DEBUG: " + ' '.join(words))
+            markerMatch = markerPatternCompiled.match(word)
+            #print("DEBUG2: " + "Word=" + word + " " + ' '.join(words))
+            # Capture context of book chapter:verse
             if (word == "\\id"):
                 book = words.pop(0)
-                print(f"Found book {book}")
+                #print(f"Found book {book}")
             elif (word == "\\c"):
                 chapter = words.pop(0)
-                print(f"Found chapter {chapter}")
+                #print(f"Found chapter {chapter}")
             elif (word == "\\v"):
                 verse = words.pop(0)
-                print(f"Found verse {verse}")
-                output.append(book)
-                output.append(chapter)
-                output.append(verse)
+                #print(f"Found verse {verse}")
+                print(f"OUTPUT: {book} {chapter}:{verse} ", end='')
                 mode = NORMAL
-            else:
-                print("Fell into else clause")
-                matchstr = "\\\\S+\\s"
-                print(matchstr)
-                p = re.compile(matchstr) # looking for a usfm \marker
-                m = p.match(word)
-                if (m != None):
-                    usfmCode = m.group(1)
+            elif (markerMatch != None): # word is a USFM marker
+                usfmCode = markerMatch.group(1)
+                if (usfmCode.endswith('*')): # end marker
+                    print(f"Found endmarker \{usfmCode} in {word}")
+                    mode = NORMAL
+                elif (usfmCode in markersToIgnore): # formatting markers like \li, q1
+                    print(f"Found to-ignore marker \{usfmCode} in {word}")
+                    mode = NORMAL
+                else:
+                    print(f"Found regular marker \{usfmCode} in {word}")
                     mode = MARKER
-                    print(f"Found marker \{usfmCode}")
+            elif (mode == NORMAL):
+                # The fall-through case is simply to print the word
+                print(word + " " , end='')
             
     # Close the file
     file.close()
