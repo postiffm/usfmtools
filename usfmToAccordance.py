@@ -22,16 +22,16 @@ import functools
 # Split words like justify\w* where there is no space before
 # the usfm marker
 def extraSplit(words:[]) -> []:
-    print("DEBUG3: In extraSplit with " + ' '.join(words))
+    #print("DEBUG3: In extraSplit with " + ' '.join(words))
     output = []
     for word in words:
-        print("DEBUG5: " + word)
+        #print("DEBUG5: " + word)
         delim = '\\'
         if delim in word:
-            print("DEBUG4: Found " + word)
+            #print("DEBUG4: Found " + word)
             subwords = word.split(delim)
             subwords[-1] = delim + subwords[-1]
-            print(subwords)
+            #print(subwords)
             output.extend(subwords)
         else:
             output.append(word)
@@ -49,7 +49,7 @@ def convertUSFMToAccordance(filename):
     usfmCode = ""
     markerPattern = r'\\(\S+)'
     markerPatternCompiled = regex.compile(markerPattern) # looking for a usfm \marker
-    markersToIgnore = ['li', 'q1', 'm']
+    markersToIgnore = ['li', 'q1', 'm', 'w']
     # The current word list
     wordlist = []
     file = open(filename,'r')
@@ -70,7 +70,7 @@ def convertUSFMToAccordance(filename):
         # Handle USFM codes (by noting them or dropping them)
         while words:
             word = words.pop(0)
-            markerMatch = markerPatternCompiled.match(word)
+            markerMatch = markerPatternCompiled.search(word)
             #print("DEBUG2: " + "Word=" + word + " " + ' '.join(words))
             # Capture context of book chapter:verse
             if (word == "\\id"):
@@ -82,18 +82,18 @@ def convertUSFMToAccordance(filename):
             elif (word == "\\v"):
                 verse = words.pop(0)
                 #print(f"Found verse {verse}")
-                print(f"OUTPUT: {book} {chapter}:{verse} ", end='')
+                print(f"\n{book} {chapter}:{verse} ", end='')
                 mode = NORMAL
             elif (markerMatch != None): # word is a USFM marker
                 usfmCode = markerMatch.group(1)
-                if (usfmCode.endswith('*')): # end marker
-                    print(f"Found endmarker \{usfmCode} in {word}")
+                if ('*' in usfmCode): # end marker
+                    #print(f"Found endmarker \{usfmCode} in {word}")
                     mode = NORMAL
                 elif (usfmCode in markersToIgnore): # formatting markers like \li, q1
-                    print(f"Found to-ignore marker \{usfmCode} in {word}")
+                    #print(f"Found to-ignore marker \{usfmCode} in {word}")
                     mode = NORMAL
                 else:
-                    print(f"Found regular marker \{usfmCode} in {word}")
+                    #print(f"Found regular marker \{usfmCode} in {word}")
                     mode = MARKER
             elif (mode == NORMAL):
                 # The fall-through case is simply to print the word

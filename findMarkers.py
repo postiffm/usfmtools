@@ -23,7 +23,7 @@ def findUSFMMarkers(filename):
     """Scans the entire USFM and finds markers"""
     markerDB = {}
     usfmCode = ""
-    markerPattern = r'\\(\S+)\*{0,1}'
+    markerPattern = r'\\([a-zA-Z0-9]+\*{0,1})'
     markerPatternCompiled = regex.compile(markerPattern) # looking for a usfm \marker
 
     wordlist = []
@@ -42,9 +42,11 @@ def findUSFMMarkers(filename):
         # Handle USFM codes (by noting them or dropping them)
         while words:
             word = words.pop(0)
-            markerMatch = markerPatternCompiled.match(word)
+            #print(word)
+            markerMatch = markerPatternCompiled.search(word)
             if (markerMatch != None): # word is a USFM marker
                 usfmCode = markerMatch.group(1)
+                #print(f"Marker {usfmCode}")
                 count = markerDB.get(usfmCode, 0)
                 markerDB[usfmCode] = count + 1;
             
