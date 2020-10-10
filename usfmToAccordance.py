@@ -19,6 +19,25 @@ import regex
 from operator import itemgetter
 import functools
 
+# Split words like justify\w* where there is no space before
+# the usfm marker
+def extraSplit(words:[]) -> []:
+    print("DEBUG3: In extraSplit with " + ' '.join(words))
+    output = []
+    for word in words:
+        print("DEBUG5: " + word)
+        delim = '\\'
+        if delim in word:
+            print("DEBUG4: Found " + word)
+            subwords = word.split(delim)
+            subwords[-1] = delim + subwords[-1]
+            print(subwords)
+            output.extend(subwords)
+        else:
+            output.append(word)
+
+    return output
+
 # Find all phrases of length=sequencelength, repeated more than once, from in_file
 def convertUSFMToAccordance(filename):
     """Scans the entire USFM and re-formats for Accordance"""
@@ -44,6 +63,9 @@ def convertUSFMToAccordance(filename):
 
         # Disregard line/verse boundaries so that repeats can cross lines/verses
         words = line.split()
+        # Some words have usfm codes abutted to them with no space: justify\w*
+        # So we need to split those apart before proceeding below.
+        words = extraSplit(words)
 
         # Handle USFM codes (by noting them or dropping them)
         while words:
