@@ -21,7 +21,8 @@ import functools
 
 # Split words like justify\w* where there is no space before
 # the usfm marker. Found that I also need to split for 
-# punctuation: justify\w*, is a common scenario.
+# punctuation: justify\w*, is a common scenario. Returns 
+# a list of "splitted" components
 def extraSplit(words:[]) -> []:
     #print("DEBUG3: In extraSplit with " + ' '.join(words))
     output = []
@@ -61,11 +62,11 @@ def convertUSFMToAccordance(filename):
     markerPatternCompiled = regex.compile(markerPattern) # looking for a usfm \marker
     # The following markers are ones we just "delete" from the text because they are
     # glossary or formatting markers.
-    markersToIgnore = ['li', 'q1', 'q2', 'm', 'w', 'pi', 'pi2', 'b']
+    markersToIgnore = ['li', 'q1', 'q2', 'm', 'w', 'pi', 'pi2', 'b', 'nb']
     # The current word list
     wordlist = []
     file = open(filename,'r')
-    print(f"Processing file {filename}")
+    #print(f"Processing file {filename}")
     for line in file:
         # Ignore blank lines
         if not line.strip():
@@ -87,13 +88,10 @@ def convertUSFMToAccordance(filename):
             # Capture context of book chapter:verse
             if (word == "\\id"):
                 book = words.pop(0)
-                #print(f"Found book {book}")
             elif (word == "\\c"):
                 chapter = words.pop(0)
-                #print(f"Found chapter {chapter}")
             elif (word == "\\v"):
                 verse = words.pop(0)
-                #print(f"Found verse {verse}")
                 print(f"\n{book} {chapter}:{verse}", end='')
                 if (newParagraph == True):
                     print(" ¶", end='')
