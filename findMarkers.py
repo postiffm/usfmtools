@@ -43,8 +43,9 @@ def findUSFMMarkers(filename):
         while words:
             word = words.pop(0)
             #print(word)
-            markerMatch = markerPatternCompiled.search(word)
-            if (markerMatch != None): # word is a USFM marker
+            #markerMatch = markerPatternCompiled.search(word)
+            #if (markerMatch != None): # word is a USFM marker
+            for markerMatch in regex.finditer(markerPatternCompiled, word):
                 usfmCode = markerMatch.group(1)
                 #print(f"Marker {usfmCode}")
                 count = markerDB.get(usfmCode, 0)

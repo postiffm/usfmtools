@@ -20,7 +20,8 @@ from operator import itemgetter
 import functools
 
 # Split words like justify\w* where there is no space before
-# the usfm marker
+# the usfm marker. Found that I also need to split for 
+# punctuation: justify\w*, is a common scenario.
 def extraSplit(words:[]) -> []:
     #print("DEBUG3: In extraSplit with " + ' '.join(words))
     output = []
@@ -31,6 +32,14 @@ def extraSplit(words:[]) -> []:
             #print("DEBUG4: Found " + word)
             subwords = word.split(delim)
             subwords[-1] = delim + subwords[-1]
+            # If you split "\v" on '\' you get subwords = ['', '\\v']
+            if (subwords[0] == ''):
+                subwords.pop(0)
+            # Handle punctuation after a USFM marker
+            if (subwords[-1].endswith(('.', ',', ';', ':'))):
+                lastchar = subwords[-1][-1]
+                subwords[-1] = subwords[-1][:-1] # remove last char
+                subwords.append(str(lastchar)) # add last char as a new subword
             #print(subwords)
             output.extend(subwords)
         else:
@@ -46,10 +55,13 @@ def convertUSFMToAccordance(filename):
     MARKER = 1 # USFM marker
     PREFIX = 2 # file header info
     mode = PREFIX
+    newParagraph = False
     usfmCode = ""
     markerPattern = r'\\(\S+)'
     markerPatternCompiled = regex.compile(markerPattern) # looking for a usfm \marker
-    markersToIgnore = ['li', 'q1', 'm', 'w']
+    # The following markers are ones we just "delete" from the text because they are
+    # glossary or formatting markers.
+    markersToIgnore = ['li', 'q1', 'q2', 'm', 'w']
     # The current word list
     wordlist = []
     file = open(filename,'r')
@@ -82,8 +94,13 @@ def convertUSFMToAccordance(filename):
             elif (word == "\\v"):
                 verse = words.pop(0)
                 #print(f"Found verse {verse}")
-                print(f"\n{book} {chapter}:{verse} ", end='')
+                print(f"\n{book} {chapter}:{verse}", end='')
+                if (newParagraph == True):
+                    print(" ¶", end='')
+                    newParagraph = False # reset
                 mode = NORMAL
+            elif (word == "\\p"):
+                newParagraph = True # store this away for future use
             elif (markerMatch != None): # word is a USFM marker
                 usfmCode = markerMatch.group(1)
                 if ('*' in usfmCode): # end marker
@@ -97,7 +114,14 @@ def convertUSFMToAccordance(filename):
                     mode = MARKER
             elif (mode == NORMAL):
                 # The fall-through case is simply to print the word
-                print(word + " " , end='')
+                # but if the "word" is just a punctuation marker, we don't 
+                # want to put a space before it! But some words have
+                # punctuation already, so we cannot simply look at the last
+                # character
+                if (word == '.' or word == ',' or word == ';' or word == ':'):
+                    print(word, end='');
+                else:
+                    print(" " + word, end='')
             
     # Close the file
     file.close()
