@@ -61,7 +61,7 @@ def convertUSFMToAccordance(filename):
     markerPatternCompiled = regex.compile(markerPattern) # looking for a usfm \marker
     # The following markers are ones we just "delete" from the text because they are
     # glossary or formatting markers.
-    markersToIgnore = ['li', 'q1', 'q2', 'm', 'w']
+    markersToIgnore = ['li', 'q1', 'q2', 'm', 'w', 'pi', 'pi2', 'b']
     # The current word list
     wordlist = []
     file = open(filename,'r')
