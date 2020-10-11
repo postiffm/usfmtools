@@ -19,9 +19,8 @@ import regex
 from operator import itemgetter
 import functools
 
-def findUSFMMarkers(filename):
+def findUSFMMarkers(filename, markerDB:{}):
     """Scans the entire USFM and finds markers"""
-    markerDB = {}
     usfmCode = ""
     markerPattern = r'\\([a-zA-Z0-9]+\*{0,1})'
     markerPatternCompiled = regex.compile(markerPattern) # looking for a usfm \marker
@@ -35,16 +34,14 @@ def findUSFMMarkers(filename):
             continue;
 
         words = line.split()
-        # Some words have usfm codes abutted to them with no space: justify\w*
-        # So we need to split those apart before proceeding below.
-        #words = extraSplit(words)
 
-        # Handle USFM codes (by noting them or dropping them)
         while words:
             word = words.pop(0)
-            #print(word)
+            # To find a single USFM marker, use the following (usual case):
             #markerMatch = markerPatternCompiled.search(word)
             #if (markerMatch != None): # word is a USFM marker
+
+            # But lines sometimes have multiple markers, so have to loop through:
             for markerMatch in regex.finditer(markerPatternCompiled, word):
                 usfmCode = markerMatch.group(1)
                 #print(f"Marker {usfmCode}")
@@ -54,14 +51,15 @@ def findUSFMMarkers(filename):
     # Close the file
     file.close()
 
-    for marker in markerDB:
-        print(f"{marker}\t{markerDB[marker]}")
-
 @click.command()
 @click.argument('files', nargs=-1)
 def main(files):
+    markerDB = {}
     for filename in files:
-        findUSFMMarkers(filename)
+        findUSFMMarkers(filename, markerDB)
+
+    for marker in markerDB:
+        print(f"{marker}\t{markerDB[marker]}")
 
 if __name__ == '__main__':
     main()
