@@ -19,6 +19,37 @@ import regex
 from operator import itemgetter
 import functools
 
+# Dictionary for quick conversion of book names.
+canonicalBookName = {
+"MAT" : "Matt.",
+"MRK" : "Mark",
+"LUK" : "Luke",
+"JHN" : "John",
+"ACT" : "Acts",
+"ROM" : "Rom.",
+"1CO" : "1Cor.",
+"2CO" : "2Cor.",
+"GAL" : "Gal.",
+"EPH" : "Eph.",
+"PHP" : "Phil.",
+"COL" : "Col.",
+"1TH" : "1Th.",
+"2TH" : "2Th.",
+"1TI" : "1Tim.",
+"2TI" : "2Tim.",
+"TIT" : "Titus",
+"PHM" : "Philem.",
+"HEB" : "Heb.",
+"JAS" : "James",
+"1PE" : "1Pet.",
+"2PE" : "2Pet.",
+"1JN" : "1John",
+"2JN" : "2John",
+"3JN" : "3John",
+"JUD" : "Jude",
+"REV" : "Rev.",
+}
+
 # Split words like justify\w* where there is no space before
 # the usfm marker. Found that I also need to split for 
 # punctuation: justify\w*, is a common scenario. Returns 
@@ -48,6 +79,9 @@ def extraSplit(words:[]) -> []:
 
     return output
 
+# Special flag to indicate a need to print the first line in a special way
+justStarted = True
+
 # Find all phrases of length=sequencelength, repeated more than once, from in_file
 def convertUSFMToAccordance(filename):
     """Scans the entire USFM and re-formats for Accordance"""
@@ -60,6 +94,7 @@ def convertUSFMToAccordance(filename):
     usfmCode = ""
     markerPattern = r'\\(\S+)'
     markerPatternCompiled = regex.compile(markerPattern) # looking for a usfm \marker
+    global justStarted
     # The following markers are ones we just "delete" from the text because they are
     # glossary or formatting markers.
     markersToIgnore = ['li', 'q1', 'q2', 'm', 'w', 'pi', 'pi2', 'b', 'nb']
@@ -87,18 +122,23 @@ def convertUSFMToAccordance(filename):
             #print("DEBUG2: " + "Word=" + word + " " + ' '.join(words))
             # Capture context of book chapter:verse
             if (word == "\\id"):
-                book = words.pop(0)
+                book = canonicalBookName[words.pop(0)]
             elif (word == "\\c"):
                 chapter = words.pop(0)
             elif (word == "\\v"):
                 verse = words.pop(0)
-                print(f"\n{book} {chapter}:{verse}", end='')
+                if (justStarted == False):
+                    print(f"\n{book} {chapter}:{verse}", end='')
+                else:
+                    print(f"{book} {chapter}:{verse}", end='')
+                    justStarted = False
                 if (newParagraph == True):
                     print(" ¶", end='')
                     newParagraph = False # reset
                 mode = NORMAL
+            # Capture whether we are starting a new paragraph...for future use
             elif (word == "\\p"):
-                newParagraph = True # store this away for future use
+                newParagraph = True
             elif (markerMatch != None): # word is a USFM marker
                 usfmCode = markerMatch.group(1)
                 if ('*' in usfmCode): # end marker
