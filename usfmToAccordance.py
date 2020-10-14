@@ -11,6 +11,7 @@
 
 # Usage:
 # python3 usfmToAccordance.py test1.usfm > test1.txt
+# python3 usfmToAccordance.py ../Luxembourgish\ NT/usfm_rev2/*.SFM > LuxAcc.txt 
 
 import copy
 import click
@@ -129,6 +130,7 @@ def convertUSFMToAccordance(filename):
     NORMAL = 0 # regular Bible text
     MARKER = 1 # USFM marker
     PREFIX = 2 # file header info
+    GLOSSARY = 3 # within a \w ... \w* section
     mode = PREFIX
     newParagraph = False
     usfmCode = ""
@@ -162,7 +164,12 @@ def convertUSFMToAccordance(filename):
             #print("DEBUG2: " + "Word=" + word + " " + ' '.join(words))
             # Capture context of book chapter:verse
             if (word == "\\id"):
-                book = canonicalBookName[words.pop(0)]
+                bookid = words.pop(0)
+                # We don't process the glossary book
+                if (bookid == "GLO"):
+                    file.close()
+                    return
+                book = canonicalBookName[bookid]
             elif (word == "\\c"):
                 chapter = words.pop(0)
             elif (word == "\\v"):
@@ -191,25 +198,49 @@ def convertUSFMToAccordance(filename):
                 if ('*' in usfmCode): # end marker
                     #print(f"Found endmarker \{usfmCode} in {word}")
                     mode = NORMAL
+                elif (usfmCode == "w"):
+                    # Special case: \w Kéiert ëm|ëmkéieren\w*,
+                    # or: \w Léiermeeschtere vum Gesetz|Léiermeeschter vum Gesetz\w*
+                    # A glossary-marked word with a lexical form. The lexical form
+                    # needs to be removed.
+                    mode = GLOSSARY
                 elif (usfmCode in markersToIgnore): # formatting markers like \li, q1
                     #print(f"Found to-ignore marker \{usfmCode} in {word}")
                     mode = NORMAL
                 else:
                     #print(f"Found regular marker \{usfmCode} in {word}")
                     mode = MARKER
+            elif (mode == GLOSSARY):
+                # Within \w ... \w*, we have to watch for the | symbol because
+                # it specifies the lexical form of a word.
+                #print("In GLOSSARY mode...")
+                if (word.find('|') != -1): # | found
+                    # We must strip the |... off, print the first part,
+                    # and then drop into mode=MARKER so that the 
+                    # rest of the words up to \w* are dropped. The code
+                    # below splits the word on |, and this returns a list,
+                    # of which I want the first element, before the |.
+                    strippedWord = word.split('|', 1)[0]
+                    printWord(strippedWord)
+                    mode = MARKER
+                else:
+                    printWord(word)
             elif (mode == NORMAL):
                 # The fall-through case is simply to print the word
-                # but if the "word" is just a punctuation marker, we don't 
-                # want to put a space before it! But some words have
-                # punctuation already, so we cannot simply look at the last
-                # character
-                if (word == '.' or word == ',' or word == ';' or word == ':'):
-                    print(word, end='');
-                else:
-                    print(" " + word, end='')
+                printWord(word)
             
     # Close the file
     file.close()
+
+def printWord(word):
+    # If the "word" is just a punctuation marker, we don't 
+    # want to put a space before it! But some words have
+    # punctuation already, so we cannot simply look at the last
+    # character
+    if (word == '.' or word == ',' or word == ';' or word == ':'):
+        print(word, end='');
+    else:
+        print(" " + word, end='')
 
 @click.command()
 @click.argument('files', nargs=-1)
