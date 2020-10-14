@@ -18,9 +18,49 @@ import click
 import regex
 from operator import itemgetter
 import functools
+#import sys # for sys.stdout.buffer.write
 
 # Dictionary for quick conversion of book names.
 canonicalBookName = {
+"GEN" : "Gen.",
+"EXO" : "Ex.",
+"LEV" : "Lev.",
+"NUM" : "Num.",
+"DEU" : "Deut.",
+"JOS" : "Josh.",
+"JDG" : "Judg.",
+"RUT" : "Ruth",
+"1SA" : "1Sam.",
+"2SA" : "2Sam.",
+"1KI" : "1Kings",
+"2KI" : "2Kings",
+"1CH" : "1Chr.",
+"2CH" : "2Chr.",
+"EZR" : "Ezra",
+"NEH" : "Neh.",
+"EST" : "Esth.",
+"JOB" : "Job",
+"PSA" : "Psa.",
+"PRO" : "Prov.",
+"ECC" : "Eccl.",
+"SNG" : "Song",
+"ISA" : "Is.",
+"JER" : "Jer.",
+"LAM" : "Lam.",
+"EZK" : "Ezek.",
+"DAN" : "Dan.",
+"HOS" : "Hos.",
+"JOL" : "Joel",
+"AMO" : "Amos",
+"OBA" : "Obad.",
+"JON" : "Jonah",
+"MIC" : "Mic.",
+"NAM" : "Nah.",
+"HAB" : "Hab.",
+"ZEP" : "Zeph.",
+"HAG" : "Hag.",
+"ZEC" : "Zech.",
+"MAL" : "Mal.",
 "MAT" : "Matt.",
 "MRK" : "Mark",
 "LUK" : "Luke",
@@ -130,6 +170,13 @@ def convertUSFMToAccordance(filename):
                 if (justStarted == False):
                     print(f"\n{book} {chapter}:{verse}", end='')
                 else:
+                    # No newline at the start, but instead a byte-order-mark for UTF-8
+                    #print('\xEF\xBB\xBF', end='') # produces c3af c2bb c2bf ??
+                    #sys.stdout.buffer.write(b"\xEF\xBB\xBF") # avoids encoding step
+                    # In future, I recommend to myself to specify output file and 
+                    # open it in mode write with encoding utf-8 and see what happens
+                    # All the work to figure out above is nought: Accordance doesn't
+                    # like the BOM.
                     print(f"{book} {chapter}:{verse}", end='')
                     justStarted = False
                 if (newParagraph == True):
