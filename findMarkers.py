@@ -18,6 +18,7 @@ import click
 import regex
 from operator import itemgetter
 import functools
+import os.path
 
 def findUSFMMarkers(filename, markerDB:{}):
     """Scans the entire USFM and finds markers"""
@@ -27,7 +28,7 @@ def findUSFMMarkers(filename, markerDB:{}):
 
     wordlist = []
     file = open(filename,'r')
-    print(f"Processing file {filename}")
+    #print(f"Processing file {filename}")
     for line in file:
         # Ignore blank lines
         if not line.strip():
@@ -56,7 +57,8 @@ def findUSFMMarkers(filename, markerDB:{}):
 def main(files):
     markerDB = {}
     for filename in files:
-        findUSFMMarkers(filename, markerDB)
+        if (os.path.exists(filename)):
+            findUSFMMarkers(filename, markerDB)
 
     for marker in markerDB:
         print(f"{marker}\t{markerDB[marker]}")
