@@ -38,28 +38,29 @@ while ($ln = <>) {
     # Strip multiple spaces in a row
     $ln =~ s/\s{1,}/ /g;
     @verses = split('[\*,;0123456789] ', $ln);
+    #print "New verses in $ln\n";
     foreach $verse (@verses) {
-	#print "  ==>", $verse;
-	# The verses are in the format Tekikaga 20:13 (Rito NT)
-	# So I need to extract the book name, and leave the rest.
-	$verse =~ /(.+)\s+[0-9]/;
-	# This will carry over to future loop iterations for like Jn. 1:1-2, 14
-	$book = $1;
-	#print "  ==>", $book, "\n";
-	$books{$book}++; # record
+        #print "  ==>", $verse, "\n";
+        # The verses are in the format Tekikaga 20:13 (Rito NT)
+        # So I need to extract the book name, and leave the rest.
+        $verse =~ /(.+)\s+[0-9]/;
+        # This will carry over to future loop iterations for like Jn. 1:1-2, 14
+        $book = $1;
+        #print "  ==>", $book, "\n";
+        $books{$book}++; # record
 
-	if ($book =~ /^\s+/) {
-	    print $ln, " has a book with a space at the beginning of the name\n";
-	}
+        if ($book =~ /^\s+/) {
+            print $ln, " has a book with a space at the beginning of the name\n";
+        }
 
-	if ($book eq "") {
-	    print $ln, " has an empty book\n";
-	    print "Previous line: ", $lastln, "\n\n";
-	}
-	elsif ($book eq "-") {
-	    print $ln, " has a mal-formed book\n";
-	    print "Previous line: ", $lastln, "\n\n";
-	}
+        if ($book eq "") {
+            print $ln, " has an empty book\n";
+            print "Previous line: ", $lastln, "\n\n";
+        }
+        elsif ($book eq "-") {
+            print $ln, " has a mal-formed book\n";
+            print "Previous line: ", $lastln, "\n\n";
+        }
     }
     $lastln = $ln;
     #print "\n";

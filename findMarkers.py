@@ -55,6 +55,10 @@ def findUSFMMarkers(filename, markerDB:{}):
 @click.command()
 @click.argument('files', nargs=-1)
 def main(files):
+    if (len(files) == 0):
+        print("Usage: python3 findMarkers.py *.usfm")
+        exit(1)
+        
     markerDB = {}
     for filename in files:
         if (os.path.exists(filename)):
