@@ -40,7 +40,6 @@ for file in sys.argv:
 	# Note: cannot do io.open(..., mode="rb", encoding="utf-8") as not permitted in this version of Python
 	# The newline argument in both open statements is critical to leave alone the CRLF
 	# lines. I don't want to edit files and change every line ending and have that 
-	# end up as a diff in git. It obscures what is really going on.
 	fi = open(filebak, mode="r", newline='')
 
 	# prepare to write modified contents to the original filename

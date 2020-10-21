@@ -166,7 +166,8 @@ def convertUSFMToAccordance(filename):
             if (word == "\\id"):
                 bookid = words.pop(0)
                 # We don't process the glossary book
-                if (bookid == "GLO"):
+                if (bookid == "GLO" or bookid == "XXA" or bookid == "XXB" or 
+                    bookid == "XXC" or bookid == "INT"):
                     file.close()
                     return
                 book = canonicalBookName[bookid]
