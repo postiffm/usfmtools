@@ -1,0 +1,3 @@
+(\xt blah)
+(\xt blah \xt*)
+(\xt blah) blah (\xt blah \xt*) (\xt blah)
