@@ -15,7 +15,6 @@
 
 import copy
 import click
-#import re
 import regex
 from operator import itemgetter
 import functools
@@ -167,12 +166,13 @@ def convertUSFMToAccordance(filename):
                 bookid = words.pop(0)
                 # We don't process the glossary book
                 if (bookid == "GLO" or bookid == "XXA" or bookid == "XXB" or 
-                    bookid == "XXC" or bookid == "INT"):
+                    bookid == "XXC" or bookid == "INT" or bookid == "BAK"):
                     file.close()
                     return
                 book = canonicalBookName[bookid]
             elif (word == "\\c"):
                 chapter = words.pop(0)
+                mode = NORMAL # move out of PREFIX mode
             elif (word == "\\v"):
                 verse = words.pop(0)
                 if (justStarted == False):
@@ -194,7 +194,7 @@ def convertUSFMToAccordance(filename):
             # Capture whether we are starting a new paragraph...for future use
             elif (word == "\\p"):
                 newParagraph = True
-            elif (markerMatch != None): # word is a USFM marker
+            elif (mode != PREFIX and markerMatch != None): # word is a USFM marker
                 usfmCode = markerMatch.group(1)
                 if ('*' in usfmCode): # end marker
                     #print(f"Found endmarker \{usfmCode} in {word}")
