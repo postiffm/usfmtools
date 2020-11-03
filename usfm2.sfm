@@ -1,0 +1,16 @@
+\rem Test for several problesm Stephanie Hommes found in the BI English Model translation
+\rem The \q1..\qt* marker was not handled properly, and also the \qt* was kept in the text because
+\rem it is part of a 3-token smashed together piece of text that I didn't handle properly in 
+\rem the extraSplit routine.
+\id MAT
+\c 2
+\p \v 18 [He wrote,]
+\b
+\q1 \qt “A voice in Ramah [village] was caused to be heard.\qt*
+\q1 \qt [A woman was] lamenting and weeping and mourning.\qt*
+\q1 \qt Rachel was weeping for her children.\qt*
+\q1 \qt Because they are no more, she did not desire that anyone comfort her,”\qt*\f + \fr 2:18\ft This is a citation of \xt Jer 31:15\
+f*
+\b
+\m [he wrote].
+\s1 The Family of Jesus Returns to Israel

@@ -95,15 +95,18 @@ canonicalBookName = {
 # punctuation: justify\w*, is a common scenario. Returns 
 # a list of "splitted" components
 def extraSplit(words:[]) -> []:
-    #print("DEBUG3: In extraSplit with " + ' '.join(words))
+    #print("\n\nDEBUG3: In extraSplit with " + ' '.join(words))
     output = []
     for word in words:
-        #print("DEBUG5: " + word)
+        #print("DEBUG4: " + word)
         delim = '\\'
         if delim in word:
-            #print("DEBUG4: Found " + word)
+            #print("DEBUG5: Found " + word)
             subwords = word.split(delim)
-            subwords[-1] = delim + subwords[-1]
+            for i in range (1,len(subwords)) :
+                # We have to add the backslash \ back into
+                # each part after the first one
+                subwords[i] = delim + subwords[i]
             # If you split "\v" on '\' you get subwords = ['', '\\v']
             if (subwords[0] == ''):
                 subwords.pop(0)
@@ -112,7 +115,7 @@ def extraSplit(words:[]) -> []:
                 lastchar = subwords[-1][-1]
                 subwords[-1] = subwords[-1][:-1] # remove last char
                 subwords.append(str(lastchar)) # add last char as a new subword
-            #print(subwords)
+            #print("DEBUG6: " + '-'.join(subwords))
             output.extend(subwords)
         else:
             output.append(word)
@@ -138,7 +141,7 @@ def convertUSFMToAccordance(filename):
     global justStarted
     # The following markers are ones we just "delete" from the text because they are
     # glossary or formatting markers.
-    markersToIgnore = ['li', 'q1', 'q2', 'm', 'w', 'pi', 'pi2', 'b', 'nb']
+    markersToIgnore = ['li', 'q1', 'q2', 'qt', 'm', 'w', 'pi', 'pi2', 'b', 'nb']
     # The current word list
     wordlist = []
     file = open(filename,'r')

@@ -1,0 +1,6 @@
+\rem Test for several problesm Stephanie Hommes found in the BI English Model translation
+\rem spaces added before brackets and apostrophes
+\id GEN
+\c 1
+\v 1 In the beginning [like, very beginning] God created the heaven[pl] and earth[sg].
+\v 2 Here is an apostrophe in the middle's of a word's.
