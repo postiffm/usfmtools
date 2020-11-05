@@ -20,6 +20,30 @@ from operator import itemgetter
 import functools
 import os.path
 
+# Our USFM markers that are approved for use by translators
+ApprovedMarkers = {
+  # Identification
+  'id', 'rem', 'h', 'toc1', 'toc2', 'toc3', 'mt1', 'mt2', 
+  # Introductions
+  'ili', 'imt1', 'imt2', 'is', 'ip', 'ipr', 'imq', 'iot', 'io1', 'io2', 'io3', 'ior', 'ior*', 'ie', 
+  # Headings
+  'ms', 's1', 's2', 'r', 'd', 'qa', 'rq', 'rq*',
+  # Chapters and verses
+  'c', 'v', 
+  # Paragraphs
+  'p', 'm', 'mi', 'nb', 'b',
+  # Poetry
+  'q1', 'q2', 'qc', 'qs', 'qs*',
+  # Lists
+  'li1', 'li2',
+  # Footnotes
+  'f', 'f*', 'fr', 'fk', 'ft',
+  # Special Text
+  'qt', 'qt*', 'tl', 'tl*', 'w', 'w*', 'xt', 'xt*',
+  # Add-ons (confused if \k..\k* is allowed or not)
+  'tr', 'th', 'tc'
+}
+
 def findUSFMMarkers(filename, markerDB:{}):
     """Scans the entire USFM and finds markers"""
     usfmCode = ""
@@ -65,7 +89,11 @@ def main(files):
             findUSFMMarkers(filename, markerDB)
 
     for marker in markerDB:
-        print(f"{marker}\t{markerDB[marker]}")
+        print(f"{marker}\t{markerDB[marker]}", end='')
+        if (not (marker in ApprovedMarkers)):
+            print("\t<<== This marker is not in the BI approved list")
+        else:
+            print("")
 
 if __name__ == '__main__':
     main()
