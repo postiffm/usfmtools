@@ -1,4 +1,5 @@
-\rem Test for several problesm Stephanie Hommes found in the BI English Model translation
+\rem Test case for usfmToAccordance.py
+\rem Test for several problems Stephanie Hommes found in the BI English Model translation
 \rem spaces added before brackets and apostrophes
 \id GEN
 \c 1

@@ -1,4 +1,5 @@
-\rem Test for several problesm Stephanie Hommes found in the BI English Model translation
+\rem Test case for usfmToAccordance.py
+\rem Test for several problems Stephanie Hommes found in the BI English Model translation
 \rem The \q1..\qt* marker was not handled properly, and also the \qt* was kept in the text because
 \rem it is part of a 3-token smashed together piece of text that I didn't handle properly in 
 \rem the extraSplit routine.
