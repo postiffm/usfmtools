@@ -39,9 +39,9 @@ ApprovedMarkers = {
   # Footnotes
   'f', 'f*', 'fr', 'fk', 'ft',
   # Special Text
-  'qt', 'qt*', 'tl', 'tl*', 'w', 'w*', 'xt', 'xt*',
+  'nd', 'nd*', 'qt', 'qt*', 'tl', 'tl*', 'w', 'w*', 'xt', 'xt*',
   # Add-ons (confused if \k..\k* is allowed or not)
-  'tr', 'th1', 'th2', 'th3', 'th4', 'th5', 'tc1', 'tc2', 'tc3', 'tc4', 'tc5'
+  'k', 'k*', 'tr', 'th1', 'th2', 'th3', 'th4', 'th5', 'tc1', 'tc2', 'tc3', 'tc4', 'tc5'
 }
 
 def findUSFMMarkers(filename, markerDB:{}):
