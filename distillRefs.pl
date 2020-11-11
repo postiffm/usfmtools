@@ -20,13 +20,19 @@
 # Update 8/19/2020: encountered new usfm \rem, which starts with \r
 # and affects the parser below.
 
+# Update 11/11/2020: encountered \r 8-12 and similar references
+# that do work in the SAB-generated app, but I flag as an error.
+# See distillTest1.txt
+
+$DEBUG = 0;
+
 while ($ln = <>) {
     # Strip leading filename (if using grep, it is like 40_Matthew.usfm)
     $ln =~ s/^.+\.usfm://;
     $ln =~ s/^.+\.SFM://;
     # If a comment line, skip entirely
     if ($ln =~ /^\\rem/) { next; }
-    #print $ln;
+    if ($DEBUG) { print $ln; }
     # Strip leading \r, leading and trailing \rq...\rq*, parentheses
     $ln =~ s/.*\\r //;
     $ln =~ s/.*\\rq //;
@@ -38,15 +44,15 @@ while ($ln = <>) {
     # Strip multiple spaces in a row
     $ln =~ s/\s{1,}/ /g;
     @verses = split('[\*,;0123456789] ', $ln);
-    #print "New verses in $ln\n";
+    if ($DEBUG) { print "New verses in $ln\n"; }
     foreach $verse (@verses) {
-        #print "  ==>", $verse, "\n";
+        if ($DEBUG) { print "  ==>", $verse, "<== \n"; }
         # The verses are in the format Tekikaga 20:13 (Rito NT)
         # So I need to extract the book name, and leave the rest.
         $verse =~ /(.+)\s+[0-9]/;
         # This will carry over to future loop iterations for like Jn. 1:1-2, 14
         $book = $1;
-        #print "  ==>", $book, "\n";
+        if ($DEBUG) { print "  ==>", $book, "<==\n"; }
         $books{$book}++; # record
 
         if ($book =~ /^\s+/) {
