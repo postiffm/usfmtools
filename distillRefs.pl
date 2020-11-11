@@ -22,7 +22,7 @@
 
 # Update 11/11/2020: encountered \r 8-12 and similar references
 # that do work in the SAB-generated app, but I flag as an error.
-# See distillTest1.txt
+# See distillTest1.txt. 
 
 $DEBUG = 0;
 
