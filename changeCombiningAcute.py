@@ -20,11 +20,11 @@ import io
 # To do:
 # Fix error handling. If .bak file already exists, do something smart.
 
-if len(sys.argv) < 2:
-	print("Usage: changeCombiningAcute.py file [file ...]\n")
-	exit(1)
-
 script = sys.argv.pop(0)
+
+if len(sys.argv) < 1:
+    print(f"Usage: {script} file [file ...]\n")
+    exit(1)
 
 for file in sys.argv:
 	print("Processing " + file)
