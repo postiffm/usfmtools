@@ -11,7 +11,7 @@ import io
 # Change out \SS markers in old-style USFM to \s1, 
 # and change \s to \s2 to retain two-level outline"""  """
 
-# Usage: python3 extractSSMarkers.py *.usfm
+# Usage: python3 changeSSMarkers.py *.usfm
 
 # To do:
 # Fix error handling. If .bak file already exists, do something smart.
