@@ -6,7 +6,9 @@ import io
 
 # Matt Postiff, 2020
 # Neao Luke is messed up. Need to learn character map to transform from 
-# old "floppy disk" type of text to new type of text.
+# old "floppy disk" type of text to new type of text. This script
+# does that. The results are a dictionary that is now in the 
+# script called neaoFix.py
 
 # Usage: python3 nearLearn.py learn.txt
 
@@ -110,7 +112,7 @@ def charmap(txt:str):
         cnt = charDict.get(c, 0)
         charDict[c] = cnt+1
 
-DEBUG = 1
+DEBUG = 0
 def debug(msg:str, lineEnd=''):
     if (DEBUG):
         print(msg) # end=lineEnd)
@@ -187,7 +189,7 @@ for file in sys.argv:
     fi.close()
 
 for o in translateDict:
-    print(f"'{o}' : '{translateDict[o]}'")
+    print(f"'{o}' : '{translateDict[o]}',")
 
 for c in charDict:
     if (c == "\n"):
@@ -197,7 +199,7 @@ for c in charDict:
     elif (c == " "):
         cToPrint = "<spc>"
     else:
-        cToPrint = c;
+        cToPrint = c
     print(f"{cToPrint}\t{charDict[c]}")
 
 unfound = 0
