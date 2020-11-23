@@ -1,4 +1,4 @@
-#!/mingw64/bin/python
+#!/usr/bin/python3
 import os
 import re
 import sys
@@ -18,16 +18,16 @@ import sys
 # Fix error handling. If .bak file already exists, do something smart.
 
 if len(sys.argv) < 2:
-	print "Usage: fixRQMarkers.py file [file ...]\n"
+	print("Usage: fixRQMarkers.py file [file ...]")
 	exit(1)
 
 script = sys.argv.pop(0)
 
 for file in sys.argv:
-	print "Processing " + file
+	print("Processing " + file)
 	filebak = file + ".bak"
 	if os.path.isdir(file):
-		print "Cannot process directory " + file + "\n";
+		print("Cannot process directory " + file)
 		continue
 
 	# rename the file to .bak
@@ -37,18 +37,25 @@ for file in sys.argv:
 	fi = open(filebak, 'r')
 
 	# prepare to write modified contents to the original filename
-	fo = open(file, 'w');
+	fo = open(file, 'w')
 
 	# do the regex operation and then write it out
 	# This regex is the expression we wish to find
 	p = re.compile(r"\\rq ([^\r\n]+)$")
+	parens = re.compile(r"\(\s*([^\)]*)\)\s*")
 	for cnt, line in enumerate(fi):
-		#print "Working on " + line
+		#print("Working on " + line)
 		# re::match returns a match object that can be used as below
 		m = p.match(line)
 		if m != None:
 			# Process the match
 			rq = m.group(1)  # The contents of the \rq "(Psalm 1:1)" in above example
+			# If the actual rq ref has parens around it, delete them
+			m = parens.match(rq)
+			if (m != None):
+				# Update rq to be just the contents of the parens
+				rq = m.group(1)
+			# Now substitute the original line for the new version with \rq* and no parens
 			line = re.sub(
 				p,
 				r"\\rq " + rq + r" \\rq*",
