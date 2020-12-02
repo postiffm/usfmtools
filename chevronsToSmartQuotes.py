@@ -34,10 +34,10 @@ for file in sys.argv:
 	os.rename(file, filebak)
 
 	# open the new .bak file for input; assume UTF-8 (USFM)
-	fi = io.open(filebak, mode="r", encoding="utf-8")
+	fi = io.open(filebak, mode="r", encoding="utf-8", newline='')
 
 	# prepare to write modified contents to the original filename
-	fo = io.open(file, mode="w", encoding="utf-8")
+	fo = io.open(file, mode="w", encoding="utf-8", newline='')
 
 	for cnt, line in enumerate(fi):
 		#print("Working on " + line)
