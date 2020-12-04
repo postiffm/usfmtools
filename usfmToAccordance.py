@@ -90,36 +90,58 @@ canonicalBookName = {
 "REV" : "Rev.",
 }
 
+DEBUG = 0
+def debug(msg:str, lineEnd=''):
+    if (DEBUG):
+        print(msg) # end=lineEnd)
+
+def error(msg:str):
+    print(f"ERROR: {msg}")
+
 # Split words like justify\w* where there is no space before
 # the usfm marker. Found that I also need to split for 
-# punctuation: justify\w*, is a common scenario. Returns 
-# a list of "splitted" components
+# punctuation: justify\w*, is a common scenario. 12/4/2020
+# I found cases like this: \x*“Cuihhleiah  and  Mip 23:24\x*cule: 
+# where the end marker causes the first word of the verse
+# to be "eaten.""
+# Returns a list of "splitted" components
 def extraSplit(words:[]) -> []:
-    #print("\n\nDEBUG3: In extraSplit with " + ' '.join(words))
-    output = []
+    debug("\n\nDEBUGA In extraSplit with " + '~'.join(words))
+    output = []  # Final list of "tokens"/words/"pieces" of the text, in order
     for word in words:
-        #print("DEBUG4: " + word)
-        delim = '\\'
-        if delim in word:
-            #print("DEBUG5: Found " + word)
-            subwords = word.split(delim)
-            for i in range (1,len(subwords)) :
-                # We have to add the backslash \ back into
-                # each part after the first one
-                subwords[i] = delim + subwords[i]
-            # If you split "\v" on '\' you get subwords = ['', '\\v']
-            if (subwords[0] == ''):
-                subwords.pop(0)
-            # Handle punctuation after a USFM marker
-            if (subwords[-1].endswith(('.', ',', ';', ':'))):
-                lastchar = subwords[-1][-1]
-                subwords[-1] = subwords[-1][:-1] # remove last char
-                subwords.append(str(lastchar)) # add last char as a new subword
-            #print("DEBUG6: " + '-'.join(subwords))
-            output.extend(subwords)
-        else:
-            output.append(word)
-
+        hold = ""  # holding space to build up tokens that were "too" split up
+        debug("DEBUGB before add to final output: " + word)
+        # Split the word on * and \ and see what we get
+        # The idea is to take a string like \x*cule: and
+        # ultimately split it into \x* and cule: but there 
+        # are different combinations of possibilities
+        subwords = regex.split('([\*\\\\])', word)
+        debug("DEBUGC " + '~'.join(subwords))
+        for subword in subwords:
+            debug("DEBUGD token: " + subword)
+            if (subword == ''):
+                pass
+            elif (subword == '\\'):
+                hold = '\\'
+            elif (subword == '*'):
+                hold = hold + "*"
+                debug(("DEBUGE        add to final output: " + hold))
+                output.append(hold)
+                hold = ""
+            elif (hold != ""):
+                # We are holding something like a \\ marker, so we have to add to it
+                hold = hold + subword
+                debug("DEBUGF hold: " + hold)
+            else: # nothing special, just add it to our output list
+                if (hold != ""): # We are "holding onto" something, so dump it
+                    error("The hold should be empty; it has " + hold)
+                    exit(1)
+                debug(("DEBUGH        add to final output: " + subword))
+                output.append(subword)
+        if (hold != ""): # A straggler we need to output
+            debug(("DEBUGI        add to final output: " + hold))
+            output.append(hold)
+    debug("DEBUGJ: " + '~'.join(output))
     return output
 
 # Special flag to indicate a need to print the first line in a special way
@@ -145,13 +167,13 @@ def convertUSFMToAccordance(filename):
     # The current word list
     wordlist = []
     file = open(filename,'r')
-    #print(f"Processing file {filename}")
+    debug(f"Processing file {filename}")
     for line in file:
         # Ignore blank lines
         if not line.strip():
             continue;
 
-        #print("DEBUG1: " + line, end='')
+        debug("DEBUG1: " + line)
 
         # Disregard line/verse boundaries so that repeats can cross lines/verses
         words = line.split()
@@ -200,7 +222,7 @@ def convertUSFMToAccordance(filename):
             elif (mode != PREFIX and markerMatch != None): # word is a USFM marker
                 usfmCode = markerMatch.group(1)
                 if ('*' in usfmCode): # end marker
-                    #print(f"Found endmarker \{usfmCode} in {word}")
+                    debug(f"Found endmarker \{usfmCode} in {word}")
                     mode = NORMAL
                 elif (usfmCode == "w"):
                     # Special case: \w Kéiert ëm|ëmkéieren\w*,
