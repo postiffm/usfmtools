@@ -162,8 +162,10 @@ def convertUSFMToAccordance(filename):
     markerPatternCompiled = regex.compile(markerPattern) # looking for a usfm \marker
     global justStarted
     # The following markers are ones we just "delete" from the text because they are
-    # glossary or formatting markers.
-    markersToIgnore = ['li', 'q1', 'q2', 'qt', 'm', 'w', 'pi', 'pi2', 'b', 'nb']
+    # glossary or formatting markers. NOTE: The next line of code is critical. If there
+    # is a marker that I have not seen before, I may lose words from the original USFM
+    # and verses can appear to be truncated. Watch out for this in the future.
+    markersToIgnore = ['li', 'q1', 'q2', 'qt', 'm', 'w', 'pi', 'pi2', 'b', 'nb', 'mi']
     # The current word list
     wordlist = []
     file = open(filename,'r')
