@@ -262,8 +262,10 @@ def printWord(word):
     # If the "word" is just a punctuation marker, we don't 
     # want to put a space before it! But some words have
     # punctuation already, so we cannot simply look at the last
-    # character
-    if (word == '.' or word == ',' or word == ';' or word == ':'):
+    # character. I look at word[0] because I have found strings like this:
+    # last word inside quote,'  where the word=,' and I need to smash
+    # that whole thing right next to the previous word.
+    if (word[0] == '.' or word[0] == ',' or word[0] == ';' or word[0] == ':' or word[0] == '!' or word[0] == '?'):
         print(word, end='');
     else:
         print(" " + word, end='')
