@@ -193,7 +193,7 @@ def convertUSFMToAccordance(filename):
                 bookid = words.pop(0)
                 # We don't process the glossary book
                 if (bookid == "GLO" or bookid == "XXA" or bookid == "XXB" or 
-                    bookid == "XXC" or bookid == "INT" or bookid == "BAK"):
+                    bookid == "XXC" or bookid == "XXD" or bookid == "INT" or bookid == "BAK"):
                     file.close()
                     return
                 book = canonicalBookName[bookid]
