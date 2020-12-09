@@ -13,12 +13,14 @@
 # python3 usfmToAccordance.py test1.usfm > test1.txt
 # python3 usfmToAccordance.py ../Luxembourgish\ NT/usfm_rev2/*.SFM > LuxAcc.txt 
 
+# Test cases are found in test[1-n].usfm
+
 import copy
 import click
 import regex
 from operator import itemgetter
 import functools
-#import sys # for sys.stdout.buffer.write
+import sys
 
 # Dictionary for quick conversion of book names.
 canonicalBookName = {
@@ -96,7 +98,8 @@ def debug(msg:str, lineEnd=''):
         print(msg) # end=lineEnd)
 
 def error(msg:str):
-    print(f"ERROR: {msg}")
+    #print(f"ERROR: {msg}")
+    sys.exit(f"ERROR: {msg}")
 
 # Split words like justify\w* where there is no space before
 # the usfm marker. Found that I also need to split for 
@@ -198,9 +201,13 @@ def convertUSFMToAccordance(filename):
                     return
                 book = canonicalBookName[bookid]
             elif (word == "\\c"):
+                if not words:
+                    error("Missing chapter number in " + filename)
                 chapter = words.pop(0)
                 mode = NORMAL # move out of PREFIX mode
             elif (word == "\\v"):
+                if not words:
+                    error("Missing verse number in " + filename)
                 verse = words.pop(0)
                 if (justStarted == False):
                     print(f"\n{book} {chapter}:{verse}", end='')
