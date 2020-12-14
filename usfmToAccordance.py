@@ -150,7 +150,6 @@ def extraSplit(words:[]) -> []:
 # Special flag to indicate a need to print the first line in a special way
 justStarted = True
 
-# Find all phrases of length=sequencelength, repeated more than once, from in_file
 def convertUSFMToAccordance(filename):
     """Scans the entire USFM and re-formats for Accordance"""
     # Modes that the usfm scanner is in (parsing mode)
@@ -264,7 +263,6 @@ def convertUSFMToAccordance(filename):
                 # The fall-through case is simply to print the word
                 printWord(word)
             
-    # Close the file
     file.close()
 
 def printWord(word):
