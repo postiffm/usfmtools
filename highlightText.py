@@ -16,6 +16,8 @@
 # python3 highlightText.py "n," *.SFM
 # and it should print all lines that have the phrase "n," in them.
 
+# View output with Firefox or other web browser
+
 import copy
 import click
 import regex
