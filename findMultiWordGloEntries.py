@@ -39,10 +39,12 @@ for file in sys.argv:
         if (len(segments) > 1):
             #print(f"Found more than one segment; must have been a \k present")
             keyword = segments[1]
-            print(f"Keyword = {keyword}", end='')
             if (keyword[0] == " "): 
                 # Delete the initial space
                 keyword = keyword[1:]
+        
+            print(f"Keyword = {keyword}", end='')
+
             if (" " in keyword):
                 print(" <== There is a space in this keyword!")
             else:
