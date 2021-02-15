@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import os
-import re
+import regex
 import sys
 import io
 
@@ -28,42 +28,50 @@ for file in sys.argv:
         continue
 
     # rename the file to .bak
-    #os.rename(file, filebak)
+    os.rename(file, filebak)
 
     # open the new .bak file for input; assume UTF-8 (USFM)
-    fi = io.open(file, mode="r", encoding="utf-8", newline='')
+    fi = io.open(filebak, mode="r", encoding="utf-8", newline='')
 
     # prepare to write modified contents to the original filename
-    #fo = io.open(file, mode="w", encoding="utf-8", newline='')
+    fo = io.open(file, mode="w", encoding="utf-8", newline='')
 
     for cnt, line in enumerate(fi):
         #print("Working on " + line)
         if ("ye ,an" in line):
             #print(f"Rule #1 in line {cnt}:{line}")
-            line = re.sub("ye ,an", "ye ιan", line)
+            # The special character ι is the Greek Iota,
+            # U+O399, UTF-8 CE 99
+            line = regex.sub("ye ,an", "ye ιan", line)
         if ("gbu ,an" in line):
             #print(f"Rule #2 in line {cnt}:{line}")
-            line = re.sub("gbu ,an", "gbu ιan", line)
+            line = regex.sub("gbu ,an", "gbu ιan", line)
         if ("Klis,a" in line):
             #print(f"Rule #3 in line {cnt}:{line}")
-            line = re.sub("Klis,a", "Klisιa", line)
-        if (re.search("[0-9] ,a", line) != None):
+            line = regex.sub("Klis,a", "Klisιa", line)
+        if (regex.search("[0-9] ,a", line) != None):
             #print(f"Rule #4 in line {cnt}:{line}")
-            line = re.sub("([0-9]) ,a", "\1 𝑙a", line)
-        if (re.search("[\.\:] ,a", line) != None):
+            # The special character 𝑙 is like an italics L, 
+            # technically Mathematical Italic Small L, U+1D459
+            # UTF-8 0xF0 0x9D 0x91 0x99
+            line = regex.sub(r"([0-9]) ,a", r"\1 𝑙a", line)
+        if (regex.search("[\.\:] ,a", line) != None):
             #print(f"Rule #5 in line {cnt}:{line}")
-            line = re.sub("([\.\:]) ,a", "\1 𝑙a", line)
-        if (re.search("‑n,a", line) != None):
+            line = regex.sub(r"([\.\:]) ,a", r"\1 𝑙a", line)
+        if (regex.search(r"‑n,a", line) != None):
             #print(f"Rule #6.1 in line {cnt}:{line}")
-            line = re.sub("‑n,a", "‑nιa", line)
-        if (re.search("w,a", line) != None):
+            line = regex.sub(r"‑n,a", r"‑nιa", line)
+        if (regex.search("w,a", line) != None):
             #print(f"Rule #6.2 in line {cnt}:{line}")
-            line = re.sub("w,a", "‑wιa", line)
-        if (re.search("w,a,n", line) != None):
+            line = regex.sub("w,a", "wιa", line)
+        if (regex.search("wιa,n", line) != None):
+            # Originally this rule said w,a,n, but the code
+            # just above changes the first part so the match 
+            # won't occur.
             #print(f"Rule #6.3 in line {cnt}:{line}")
-            line = re.sub("w,a,n", "wιaιn", line)
+            line = regex.sub("wιa,n", "wιaιn", line)
 
-        #fo.write(line)
+        fo.write(line)
 
 fi.close()
-#fo.close()
+fo.close()
