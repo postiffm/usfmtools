@@ -40,7 +40,7 @@ for file in sys.argv:
 
     for cnt, line in enumerate(fi):
         #print("Working on " + line)
-        if ("\\r " in line):
+        if (("\\r " in line) or ("\\rq " in line)):
             line = re.sub("Úwa ", "", line)
             line = re.sub("úwa ", "", line)
         fo.write(line)
