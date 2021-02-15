@@ -38,6 +38,7 @@ for file in sys.argv:
 
     for cnt, line in enumerate(fi):
         #print("Working on " + line)
+        # Round 1 Fixes
         if ("ye ,an" in line):
             #print(f"Rule #1 in line {cnt}:{line}")
             # The special character ι is the Greek Iota,
@@ -70,7 +71,11 @@ for file in sys.argv:
             # won't occur.
             #print(f"Rule #6.3 in line {cnt}:{line}")
             line = regex.sub("wιa,n", "wιaιn", line)
-
+        # Round 2 Fixes
+        if (" ,an" in line):
+            line = regex.sub(" ,an", " 𝑙an", line)
+        if (" ,n" in line):
+            line = regex.sub(" ,n", " 𝑙a", line)
         fo.write(line)
 
 fi.close()
