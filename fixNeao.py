@@ -76,6 +76,21 @@ for file in sys.argv:
             line = regex.sub(" ,an", " 𝑙an", line)
         if (" ,n" in line):
             line = regex.sub(" ,n", " 𝑙a", line)
+        # Round 3 Fixes
+        if (" -n,." in line):
+            line = regex.sub(" -n,.", " -nι.", line)
+        if (" -n," in line):
+            line = regex.sub(" -n,", " -nι", line)
+        if (" n,," in line):
+            line = regex.sub(" n,,", " nι-,", line)
+        if (" n," in line):
+            line = regex.sub(" n,", " nι", line)
+        if (" d," in line):
+            line = regex.sub(" d,", " dι", line)
+        if (" kp,n" in line):
+            line = regex.sub(" kp,n", " kpιn", line)
+        if (" kp,ɔn" in line):
+            line = regex.sub(" kp,ɔn", " kpιɔn", line)
         fo.write(line)
 
 fi.close()
