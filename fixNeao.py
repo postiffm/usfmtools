@@ -77,10 +77,10 @@ for file in sys.argv:
         if (" ,n" in line):
             line = regex.sub(" ,n", " 𝑙a", line)
         # Round 3 Fixes
-        if (" -n,." in line):
-            line = regex.sub(" -n,.", " -nι.", line)
-        if (" -n," in line):
-            line = regex.sub(" -n,", " -nι", line)
+        if (" ‑n,." in line):
+            line = regex.sub(r" ‑n,\.", r" -nι.", line)
+        if (" ‑n," in line):
+            line = regex.sub(" ‑n,", " -nι", line)
         if (" n,," in line):
             line = regex.sub(" n,,", " nι-,", line)
         if (" n," in line):
@@ -91,6 +91,9 @@ for file in sys.argv:
             line = regex.sub(" kp,n", " kpιn", line)
         if (" kp,ɔn" in line):
             line = regex.sub(" kp,ɔn", " kpιɔn", line)
+        # Round 4 Fixes
+        if (" : " in line):  # should be capital Ɔ
+            line = regex.sub(" : ", " Ɔ ", line)
         fo.write(line)
 
 fi.close()
