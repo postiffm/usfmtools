@@ -1,54 +1,35 @@
 #!/bin/bash
 
-# Clean up old book listing
-rm bookReport.txt
+# ls -l | grep "drw" | wc -l
+# presently (2/28/2021 shows 45 apps)
 
-# For loop #1
-for f in 'Akha' 'Bualkhaw Chin NT' 'Chakma NT' 'Chiru NT' 'Dagaara NT' 'Dagba NT' 'Darlong Bible' 'Day NT' 'Dendi NT' 'Falam Bible' 'Haitian Creole NT Ps Pr' 'Hakha Chin NT' 'Inner Seraji NT' 'Inpui Naga NT' 'Kabiye NT' 'Kaulong NT' 'Koyra Ciini Songhay' 'Lamkaang NT' 'Luxembourgish NT' 'Manipuri Bible' 'Mizo LUS NT' 'Sara Ngam NT' 'Quechua NT' 'Ranglong NT' 'Rito NT' 'Sango' 'Sara Kaba Deme Bible' 'Sara Kaba Naa NT' 'Sara Madjingaye Bible' 'Simte NT Ps Pv' 'Tenek' 'Tumak' 'Waali Bible' 'Warao Bible' 'Zarma Bible' 'Zokam NT' 'Zotung Chin NT' 'Neao Bible' 'Kaowlu NT' 'Kabiye NT' 'Tagalog' 'Paite'
+LOGFILE="../loopAppsReport.txt"
+date > $LOGFILE
+
+# For loop
+for f in akha bim_e_2020.10.20 bualkhaw chakma chiru dagaara darlong day \
+dendi falamchin haitiancreole hakhachin innerseraji inpuinaga kabiye kaowlu \
+kaulong koyraciini lamkaang luxembourgish manipuri matuchin mizo neao paite \
+quechua ranglong rathawi rawang rito sango sarakabademe sarakabanaa \
+saramadjingaye sarangam simte tagalog taisun tangkhulnaga tenek tumak \
+waali warao zokam zotung
 do
 
-# For loop #2...inside loop #1
-for d in 'usfm_rev1' 'usfm_rev2' 'usfm_rev3' 'usfm_rev4' 'usfm_rev5' 'usfm_rev6'
-do
+cd $f
+echo "Checking USFM health of $f"
+echo "===================================" >> $LOGFILE
+echo $f >> $LOGFILE
+echo "===================================" >> $LOGFILE
+../../usfmtools/usfmHealthReport.sh >> $LOGFILE
+cat usfm.distilledxrefreport >> $LOGFILE
+grep "This marker" markers.txt >> $LOGFILE
+cd ..
 
-# Generate USFM health report
-if [ -e "$f/$d" ]
-then
-    cd "$f/$d"
-    pwd
-    ../../usfmtools/usfmHealthReport.sh
-    cd ../..
-fi
-
-# End for loop #2
 done
+# End for loop
 
-# For loop #3...inside loop #1 (not #2)
-for d in 'usfm_rev6' 'usfm_rev5' 'usfm_rev4' 'usfm_rev3' 'usfm_rev2' 'usfm_rev1'
-do
+# Run the following to find all markers that are suspect:
+# find . -name markers.txt -exec grep "This marker" {} \;
 
-# Check for missing \rq* markers in the usfm.xrefreport file generated above
-if [ -e "$f/$d" ]
-then
-    cd "$f/$d"
-    pwd
-    grep '\\rq' usfm.xrefreport
-    #| grep -v '\\rq*'
-
-    echo "-----------------------------------" >> ../../bookReport.txt
-    echo "$f $d" >> ../../bookReport.txt
-    grep '\\toc1' *.SFM *.usfm >> ../../bookReport.txt
-    grep '\\mt' *.SFM *.usfm >> ../../bookReport.txt
-
-    cd ../..
-
-    # Because I look at the latest version of usfm first, this saves us
-    # irrelevant work.
-    break
-fi
-    
-# End for loop #3
-done
-
-# End for loop #1    
-done
+# To find total cross references in each translation, do this:
+# find . -name usfm.distilledxrefreport -exec grep -H "total xrefs" {} \; > totalxrefs.txt

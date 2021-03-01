@@ -7,7 +7,7 @@ my $totalFinds = 0;
 foreach my $f (@files) {
     $totalFinds += findInFile($f);
 }
-print STDERR "Found total of $totalFinds mistakes in placement of \v USFM marker\n";
+print "Found total of $totalFinds mistakes in placement of \v USFM marker\n";
 
 sub findInFile {
     my $f = shift(@_);
