@@ -1,0 +1,6 @@
+02EXOPBBI.SFM:\r Pem 35:4-9
+01GENPBBI.SFM:\r 1 Khang 1:5-7
+01GENPBBI.SFM:\r 1 Khang 1:8-12, Pem 34:1-2, 2 Khang 2:1-11
+01GENPBBI.SFM:\r 1 Khang 1:8-12,Pem 34:1-2,2 Khang 2:1-11
+01GENPBBI.SFM:\r 1 Khang 2:1,2
+01GENPBBI.SFM:\r Romans 2:1,2

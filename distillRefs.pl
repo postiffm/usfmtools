@@ -9,7 +9,7 @@
 
 # Do a grep first to extract just the lines we want, and run
 # like this:
-# grep '\\r' *.usfm | ~/bibledit-desktop/linux/distillRefs.pl
+# grep '\\r' *.usfm | ../../usfmtools/distillRefs.pl
 # The grep allows us to be a little sloppy below, not checking for
 # blank lines or lines with no interesting USFM like \r or \rq...\rq*
 
@@ -23,6 +23,10 @@
 # Update 11/11/2020: encountered \r 8-12 and similar references
 # that do work in the SAB-generated app, but I flag as an error.
 # See distillTest1.txt. 
+
+# Update 2/27/2021: Trying to fix the "empty book" problem when 
+# there is a book like "1 Kings." Test with
+# cat distillTest.sfm | ./distillRefs.pl
 
 $DEBUG = 0;
 
@@ -43,16 +47,29 @@ while ($ln = <>) {
     $ln =~ s/\r$//g;
     # Strip multiple spaces in a row
     $ln =~ s/\s{1,}/ /g;
-    @verses = split('[\*,;0123456789] ', $ln);
-    if ($DEBUG) { print "New verses in $ln\n"; }
-    foreach $verse (@verses) {
-        if ($DEBUG) { print "  ==>", $verse, "<== \n"; }
-        # The verses are in the format Tekikaga 20:13 (Rito NT)
+    # If there is a case of digit-space-digit, we are about to squash
+    # out that space, and it will create a false reading. That would be
+    # the case, say, if a cross ref was like Romans 8:28 29 instead of 8:28,29
+    if ($ln =~ /[\d]\s+[\d]/) {
+        print "Here is a cross-ref that seems wrong: ", $ln, "\n";
+    }
+    # Remove spaces
+    $ln =~ s/([\*,;])\s+/$1/g;
+    @refs = split('[\*,;]', $ln);
+    if ($DEBUG) { print join('^^', @refs), "\n"; }
+    if ($DEBUG) { print "Finding new verse refs in $ln\n"; }
+    foreach $ref (@refs) {
+        if ($DEBUG) { print "  ==>Reference:", $ref, "<== \n"; }
+        if ($ref eq "") { 
+            if ($DEBUG) { print "     Skipping blank\n"; }
+            next;
+        }
+        # The references are in the format Tekikaga 20:13 (Rito NT)
         # So I need to extract the book name, and leave the rest.
-        $verse =~ /(.+)\s+[0-9]/;
+        $ref =~ /(.+)\s+[0-9]/;
         # This will carry over to future loop iterations for like Jn. 1:1-2, 14
         $book = $1;
-        if ($DEBUG) { print "  ==>", $book, "<==\n"; }
+        if ($DEBUG) { print "  ==>Book:", $book, "<==\n"; }
         $books{$book}++; # record
 
         if ($book =~ /^\s+/) {
@@ -69,13 +86,14 @@ while ($ln = <>) {
         }
     }
     $lastln = $ln;
+    $book = "";
     #print "\n";
 }
 
 printf("%-15s %s\n", "Book", "Occurrences");
 printf("%-15s %s\n", "--------------", "-----------");
 $totalxRefCount = 0;
-foreach $book (keys %books) {
+foreach $book (sort keys %books) {
     printf("%-15s %d\n", $book, $books{$book});
     $totalxRefCount += $books{$book};
 }
