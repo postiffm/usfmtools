@@ -33,3 +33,6 @@ done
 
 # To find total cross references in each translation, do this:
 # find . -name usfm.distilledxrefreport -exec grep -H "total xrefs" {} \; > totalxrefs.txt
+
+# To gather all cross references in the  translations, do this:
+# find . -name usfm.xrefreport -exec cat {} \; > allxrefs.txt
