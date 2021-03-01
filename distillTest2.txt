@@ -5,6 +5,6 @@
 01GENPBBI.SFM:\r 1 Khang 2:1,2
 01GENPBBI.SFM:\r Romans 2:1,2
 40_Matthew.usfm:\r Mak 4:21-23, 9:50; Luk 8:16-18,
-# Below case I discovered had no book name!
-40_Matthew.usfm:\r 11:33-36, 14:33-36
+40_Matthew.usfm:\r Mak 11:33-36, 14:33-36
 44JHNDay.SFM:\r MAT. 21:12-17 MRK 11:15-18 LUK 19:45-48
+2MRKDay.SFM:\r Mat. 26:17-30 Luk 22:7-23 Ja̰ 13:1-35 1Ko 11:23-25

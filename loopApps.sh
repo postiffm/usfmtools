@@ -3,8 +3,10 @@
 # ls -l | grep "drw" | wc -l
 # presently (2/28/2021 shows 45 apps)
 
-LOGFILE="../loopAppsReport.txt"
+LOGFILE="loopAppsReport.txt"
 date > $LOGFILE
+# Slight change so log file is addressed correctly in the loop below
+LOGFILE="../loopAppsReport.txt"
 
 # For loop
 for f in akha bim_e_2020.10.20 bualkhaw chakma chiru dagaara darlong day \
@@ -18,7 +20,7 @@ do
 cd $f
 echo "Checking USFM health of $f"
 echo "===================================" >> $LOGFILE
-echo $f >> $LOGFILE
+echo "Translation for language $f" >> $LOGFILE
 echo "===================================" >> $LOGFILE
 ../../usfmtools/usfmHealthReport.sh >> $LOGFILE
 cat usfm.distilledxrefreport >> $LOGFILE

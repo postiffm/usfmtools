@@ -50,14 +50,23 @@ while ($ln = <>) {
     # If there is a case of digit-space-digit, we are about to squash
     # out that space, and it will create a false reading. That would be
     # the case, say, if a cross ref was like Romans 8:28 29 instead of 8:28,29
-    if ($ln =~ /[\d]\s+[\d]/) {
-        print "Here is a cross-ref that seems wrong: ", $ln, "\n";
-    }
+    # or \r Ja̰ 13:1-35 1Ko 11:23-25 where there is a 5-space-1 (1Ko) that 
+    # is digit-space-digit with no separator, but it should have one.
+    # This is taken care of by a case below of digit-space being replaced
+    # by digit-proper separator like , or ;
+    #if ($ln =~ /[\d]\s+[\d]/) {
+    #    print "Here is a cross-ref that seems wrong: ", $ln, "\n";
+    #    $temp = $ln;
+    #    $temp =~ s/[\d]\s[\d]/***/g;
+    #    print "Here is a cross-ref that seems wrong: ", $temp, "\n";
+    #}
     # Remove extra spaces
     $ln =~ s/([\*,;])\s+/$1/g;
     # Case like 44JHNDay.SFM:\r Mat. 21:12-17 Mark 11:15-18 Luk 19:45-48
-    # where there are no comma or semicolon separators.
+    # where there are no comma or semicolon separators. I look for a digit
+    # followed by a space, and add a separator in.
     $ln =~ s/([\d])\s/$1,/g;
+    # Now split on the separators
     @refs = split('[\*,;]', $ln);
     if ($DEBUG) { print join('^^', @refs), "\n"; }
     if ($DEBUG) { print "Finding new verse refs in $ln\n"; }
