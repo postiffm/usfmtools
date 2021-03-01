@@ -21,19 +21,22 @@ import functools
 import os.path
 
 # Our USFM markers that are approved for use by translators
+# Note that mt, s, and q are not officially on the approved list, 
+# but since they are synonymous with their \mtq, \s1, and \q1 identities,
+# no problem to keep them here.
 ApprovedMarkers = {
   # Identification
-  'id', 'rem', 'h', 'toc1', 'toc2', 'toc3', 'mt1', 'mt2', 
+  'id', 'rem', 'h', 'toc1', 'toc2', 'toc3', 'mt', 'mt1', 'mt2', 
   # Introductions
   'ili', 'imt1', 'imt2', 'is', 'ip', 'ipr', 'imq', 'iot', 'io1', 'io2', 'io3', 'ior', 'ior*', 'ie', 
-  # Headings
-  'ms', 's1', 's2', 'r', 'd', 'qa', 'rq', 'rq*',
+  # Headings, references
+  'ms', 's', 's1', 's2', 'r', 'd', 'qa', 'rq', 'rq*', 'x', 'x*', 'xo',
   # Chapters and verses
   'c', 'v', 
   # Paragraphs
   'p', 'm', 'mi', 'nb', 'b',
   # Poetry
-  'q1', 'q2', 'qc', 'qs', 'qs*',
+  'q', 'q1', 'q2', 'qc', 'qs', 'qs*',
   # Lists
   'li1', 'li2',
   # Footnotes
@@ -41,7 +44,8 @@ ApprovedMarkers = {
   # Special Text
   'nd', 'nd*', 'qt', 'qt*', 'tl', 'tl*', 'w', 'w*', 'xt', 'xt*',
   # Add-ons (confused if \k..\k* is allowed or not)
-  'k', 'k*', 'tr', 'th1', 'th2', 'th3', 'th4', 'th5', 'tc1', 'tc2', 'tc3', 'tc4', 'tc5'
+  'k', 'k*', 'tr', 'th1', 'th2', 'th3', 'th4', 'th5', 'tc1', 'tc2', 'tc3', 'tc4', 'tc5',
+  'periph'
 }
 
 def findUSFMMarkers(filename, markerDB:{}):
