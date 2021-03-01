@@ -53,8 +53,11 @@ while ($ln = <>) {
     if ($ln =~ /[\d]\s+[\d]/) {
         print "Here is a cross-ref that seems wrong: ", $ln, "\n";
     }
-    # Remove spaces
+    # Remove extra spaces
     $ln =~ s/([\*,;])\s+/$1/g;
+    # Case like 44JHNDay.SFM:\r Mat. 21:12-17 Mark 11:15-18 Luk 19:45-48
+    # where there are no comma or semicolon separators.
+    $ln =~ s/([\d])\s/$1,/g;
     @refs = split('[\*,;]', $ln);
     if ($DEBUG) { print join('^^', @refs), "\n"; }
     if ($DEBUG) { print "Finding new verse refs in $ln\n"; }
@@ -70,6 +73,9 @@ while ($ln = <>) {
         # This will carry over to future loop iterations for like Jn. 1:1-2, 14
         $book = $1;
         if ($DEBUG) { print "  ==>Book:", $book, "<==\n"; }
+        if ($book eq ",") {
+            print "Here is a book name that seems wrong: ", $book, " in ", $ln, "\n";
+        }
         $books{$book}++; # record
 
         if ($book =~ /^\s+/) {
