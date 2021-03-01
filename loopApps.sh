@@ -30,8 +30,11 @@ cd ..
 done
 # End for loop
 
+# Run the following to list all markers that are suspect with filenames:
+# find . -name markers.txt -exec grep -H "This marker" {} \;
+
 # Run the following to find all markers that are suspect:
-# find . -name markers.txt -exec grep "This marker" {} \;
+# find . -name markers.txt -exec grep "This marker" {} \; | ../usfmtools/sumBadMarkers.pl > badmarkers.txt
 
 # To find total cross references in each translation, do this:
 # find . -name usfm.distilledxrefreport -exec grep -H "total xrefs" {} \; > totalxrefs.txt
