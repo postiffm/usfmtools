@@ -40,7 +40,14 @@ for file in sys.argv:
         #print("Working on " + line)
         # Round 5 Fixes
         if ("Klis," in line):
+            # This is the name of Christ, the comma should be an iota
             line = regex.sub("Klis,", "Klisι", line)
+        if ("𝑙" in line):
+            # Replace arithmetic small italic L U+1D459 with capital iota U+0399 (UTF-8 CE99)
+            # which we believe corresponds to the lowercase iota U+03B9 (UTF-8 CEB9)
+            line = regex.sub("𝑙", "Ι", line)
+        if (regex.search(r"(\S),(\S)", line) != None):
+            line = regex.sub(r"(\S),(\S)", r"\1ι\2", line)
         fo.write(line)
 
 fi.close()
