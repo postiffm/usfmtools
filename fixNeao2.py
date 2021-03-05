@@ -20,8 +20,6 @@ if len(sys.argv) < 2:
 
 script = sys.argv.pop(0)
 
-count6 = [0, 0, 0, 0, 0]
-
 for file in sys.argv:
     print("Processing " + file)
     filebak = file + ".bak"
@@ -50,21 +48,7 @@ for file in sys.argv:
             line = regex.sub("𝑙", "Ι", line)
         if (regex.search(r"(\S),(\S)", line) != None):
             line = regex.sub(r"(\S),(\S)", r"\1ι\2", line)
-        # Round 6 Fixes
-        # 6.1 - Fixed by hand
-        count6[1] = 1
-        # 6.2 ´w,,,n‑´ all three , to iota
-        if (regex.search(r"´w,,,n‑´", line) != None):
-            line = regex.sub(r"´w,,,n‑´", r"´wιιιn‑´, line)
-            count6[2] = count6[2] + 1
-        if (regex.search(r"´w,,n", line) != None):
-            line = regex.sub(r"´w,,n", r"´wιιn", line)
-            count6[3] = count6[3] + 1
-
         fo.write(line)
 
 fi.close()
 fo.close()
-
-for i in range(len(count6)):
-    print(f"Fixed rule {i} {count6[i]} times")
