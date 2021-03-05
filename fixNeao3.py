@@ -20,7 +20,7 @@ if len(sys.argv) < 2:
 
 script = sys.argv.pop(0)
 
-count6 = [0, 0, 0, 0, 0, 0, 0]
+count6 = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 for file in sys.argv:
     print("Processing " + file)
@@ -56,6 +56,9 @@ for file in sys.argv:
         if (regex.search(r"´W,kpɔ", line) != None):
             line = regex.sub(r"´W,kpɔ", r"´Wιkpɔ", line) # Note capital W not handled above
             count6[6] = count6[6] + 1  # Yes, it is SIX, not FIVE. 5 is subsumed inside of 4
+        if (regex.search(r"´W,a", line) != None):
+            line = regex.sub(r"´W,a", r"´Wιa", line) # Note capital W not handled above
+            count6[12] = count6[12] + 1  # Yes, it is 12
 
         fo.write(line)
 
