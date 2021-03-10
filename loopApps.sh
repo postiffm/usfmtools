@@ -9,7 +9,7 @@ date > $LOGFILE
 LOGFILE="../loopAppsReport.txt"
 
 # For loop
-for f in akha bim_e_2020.10.20 bualkhaw chakma chiru dagaara darlong day \
+for f in akha bimodel bualkhaw chakma chiru dagaara darlong day \
 dendi falamchin haitiancreole hakhachin innerseraji inpuinaga kabiye kaowlu \
 kaulong koyraciini lamkaang luxembourgish manipuri matuchin mizo neao paite \
 quechua ranglong rathawi rawang rito sango sarakabademe sarakabanaa \
