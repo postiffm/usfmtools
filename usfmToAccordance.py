@@ -194,7 +194,7 @@ def convertUSFMToAccordance(filename):
             if (word == "\\id"):
                 bookid = words.pop(0)
                 # We don't process the glossary book
-                if (bookid == "GLO" or bookid == "XXA" or bookid == "XXB" or 
+                if (bookid == "GLO" or bookid == "XXA" or bookid == "XXB" or bookid == "FRT" or
                     bookid == "XXC" or bookid == "XXD" or bookid == "INT" or bookid == "BAK"):
                     file.close()
                     return
