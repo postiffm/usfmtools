@@ -77,7 +77,7 @@ bookToNumber = dict((book, number) for number, book in numberToBook.items())
 # looking up the (number->book) entries in the above dictionary. This works
 # because there is a one-to-one mapping in the original dictionary.
 
-# Fix up book names, like Gen., so they are what we expect - no periods, etc.
+# Fix up book names, like Gen., so they are what we expect - no trailing periods, etc.
 def normalizeBook(book:str) -> str:
     if (book[-1] == "."):
         book = book[0:-1]
@@ -127,5 +127,9 @@ def testRefEncode():
 
 #testRefEncode()
 
-# Also need a book checking function--make sure book is correct
-# Also need a funciton to check that chapters and verses are in proper ranges for every book and chapter of the Bible
+# Also need function to check that chapters and verses are in proper ranges for every book and chapter of the Bible
+def checkChapterInRange(book:str, chapter:int) -> bool:
+    return True
+
+def checkVerseInRange(book:str, chapter:int, verse:int) -> bool:
+    return True
