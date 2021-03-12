@@ -172,7 +172,7 @@ def convertUSFMToAccordance(filename):
     wordlist = []
     file = open(filename,'r')
     debug(f"Processing file {filename}")
-    for line in file:
+    for lineno, line in enumerate(file):
         # Ignore blank lines
         if not line.strip():
             continue;
@@ -194,19 +194,20 @@ def convertUSFMToAccordance(filename):
             if (word == "\\id"):
                 bookid = words.pop(0)
                 # We don't process the glossary book
-                if (bookid == "GLO" or bookid == "XXA" or bookid == "XXB" or bookid == "FRT" or
-                    bookid == "XXC" or bookid == "XXD" or bookid == "INT" or bookid == "BAK"):
+                if (bookid == "XXA" or bookid == "XXB" or bookid == "FRT" or bookid == "GLO" or 
+                    bookid == "XXC" or bookid == "XXD" or bookid == "INT" or bookid == "BAK" or
+                    bookid == "XXE" or bookid == "XXF" or bookid == "XXG"):
                     file.close()
                     return
                 book = canonicalBookName[bookid]
             elif (word == "\\c"):
                 if not words:
-                    error("Missing chapter number in " + filename)
+                    error(f"Missing chapter number in {filename}:{lineno}")
                 chapter = words.pop(0)
                 mode = NORMAL # move out of PREFIX mode
             elif (word == "\\v"):
                 if not words:
-                    error("Missing verse number in " + filename)
+                    error(f"Missing verse number in {filename}:{lineno}")
                 verse = words.pop(0)
                 if (justStarted == False):
                     print(f"\n{book} {chapter}:{verse}", end='')
