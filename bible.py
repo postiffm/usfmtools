@@ -356,7 +356,16 @@ def testChapterRange():
 
 #testChapterRange()
 
+# For saving and restoring the above verse dictionary to a file
+def save_obj(obj, name):
+    with open(name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
 
+def load_obj(name):
+    with open(name + '.pkl', 'rb') as f:
+        return pickle.load(f)
+
+load_obj()
 
 def checkVerseInRange(book:str, chapter:int, verse:int) -> bool:
     book = normalizeBook(book)
