@@ -96,56 +96,9 @@ def debug(msg:str, lineEnd=''):
 
 def error(msg:str):
     #print(f"ERROR: {msg}")
-    sys.exit(f"ERROR: {msg}")
-
-# Split words like justify\w* where there is no space before
-# the usfm marker. Found that I also need to split for 
-# punctuation: justify\w*, is a common scenario. 12/4/2020
-# I found cases like this: \x*“Cuihhleiah  and  Mip 23:24\x*cule: 
-# where the end marker causes the first word of the verse
-# to be "eaten.""
-# Returns a list of "splitted" components
-def extraSplit(words:[]) -> []:
-    debug("\n\nDEBUGA In extraSplit with " + '~'.join(words))
-    output = []  # Final list of "tokens"/words/"pieces" of the text, in order
-    for word in words:
-        hold = ""  # holding space to build up tokens that were "too" split up
-        debug("DEBUGB before add to final output: " + word)
-        # Split the word on * and \ and see what we get
-        # The idea is to take a string like \x*cule: and
-        # ultimately split it into \x* and cule: but there 
-        # are different combinations of possibilities
-        subwords = regex.split('([\*\\\\])', word)
-        debug("DEBUGC " + '~'.join(subwords))
-        for subword in subwords:
-            debug("DEBUGD token: " + subword)
-            if (subword == ''):
-                pass
-            elif (subword == '\\'):
-                hold = '\\'
-            elif (subword == '*'):
-                hold = hold + "*"
-                debug(("DEBUGE        add to final output: " + hold))
-                output.append(hold)
-                hold = ""
-            elif (hold != ""):
-                # We are holding something like a \\ marker, so we have to add to it
-                hold = hold + subword
-                debug("DEBUGF hold: " + hold)
-            else: # nothing special, just add it to our output list
-                if (hold != ""): # We are "holding onto" something, so dump it
-                    error("The hold should be empty; it has " + hold)
-                    exit(1)
-                debug(("DEBUGH        add to final output: " + subword))
-                output.append(subword)
-        if (hold != ""): # A straggler we need to output
-            debug(("DEBUGI        add to final output: " + hold))
-            output.append(hold)
-    debug("DEBUGJ: " + '~'.join(output))
-    return output
-
-# Special flag to indicate a need to print the first line in a special way
-justStarted = True
+    #sys.exit(f"ERROR: {msg}")
+    # Do not stop in case of this error so that user can see all errors easily at one run
+    sys.stderr.write(f"ERROR: {msg}\n")
 
 verseDict = {}
 
@@ -161,7 +114,6 @@ def countChaptersVerses(filename):
     usfmCode = ""
     markerPattern = r'\\(\S+)'
     markerPatternCompiled = regex.compile(markerPattern) # looking for a usfm \marker
-    global justStarted
     # The following markers are ones we just "delete" from the text because they are
     # glossary or formatting markers. NOTE: The next line of code is critical. If there
     # is a marker that I have not seen before, I may lose words from the original USFM
@@ -180,9 +132,6 @@ def countChaptersVerses(filename):
 
         # Disregard line/verse boundaries so that repeats can cross lines/verses
         words = line.split()
-        # Some words have usfm codes abutted to them with no space: justify\w*
-        # So we need to split those apart before proceeding below.
-        words = extraSplit(words)
 
         # Handle USFM codes (by noting them or dropping them)
         while words:
@@ -210,8 +159,18 @@ def countChaptersVerses(filename):
                     error(f"Missing verse number in {filename}:{lineno}")
                 verse = words.pop(0)
                 # Verse numbers should be monotonically increasing by one every time from the previous one
-                prevVerse = verseDict.get((book, chapter), 0)
-                if ((int(prevVerse)+1) != int(verse)):
+                prevVerse = int(verseDict.get((book, chapter), 0))
+                if ("-" in verse):
+                    # Special case: we have a verse range, like 17-18
+                    verses = verse.split("-")
+                    verse1 = int(verses[0])
+                    verse2 = verses[1] # keep it a string for now
+                    if (prevVerse+1 != verse1):
+                        error(f"Verse number {verse1} in range {verse} is out of sequence in {book} {chapter}, last verse was {prevVerse}")
+                    prevVerse = verse1 # move one step forward
+                    verse = verse2
+                # Now carry on as if no verse range was found
+                if (prevVerse+1 != int(verse)):
                     error(f"Verse number {verse} is out of sequence in {book} {chapter}, last verse was {prevVerse}")
                 verseDict[(book, chapter)] = verse
 
