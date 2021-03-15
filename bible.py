@@ -218,7 +218,10 @@ def checkVerseInRange(book:str, chapter:int, verse:int) -> bool:
     return True
 
 def testVerseRange():
-
+    checkVerseInRange("Gen.", 50, 240)
+    checkVerseInRange("Rev", 21, 0)
+    checkVerseInRange("Mat", 1, 20)
+    checkVerseInRange("Mat", 1, 29)
     return True
 
 testVerseRange()
