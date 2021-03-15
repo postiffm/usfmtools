@@ -18,6 +18,7 @@ import regex
 from operator import itemgetter
 import functools
 import sys
+import os
 
 DEBUG = 0
 def debug(msg:str, lineEnd=''):
@@ -51,7 +52,11 @@ def countChaptersVerses(filename):
     markersToIgnore = ['li', 'q1', 'q2', 'qt', 'm', 'w', 'pi', 'pi2', 'b', 'nb', 'mi']
     # The current word list
     wordlist = []
-    file = open(filename,'r')
+    try:
+        file = open(filename,'r')
+    except IOError:
+        # File does not exist
+        return
     debug(f"Processing file {filename}")
     for lineno, line in enumerate(file):
         # Ignore blank lines

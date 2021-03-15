@@ -7,3 +7,4 @@ cat usfm.xrefreport |  ../../usfmtools/distillRefs.pl > usfm.distilledxrefreport
 grep 'Number of total xrefs' usfm.distilledxrefreport
 echo "Finding USFM markers...look in markers.txt"
 python3 ../../usfmtools/findMarkers.py *.SFM *.usfm *.sfm > markers.txt
+../../usfmtools/countChaptersVerses.py *.SFM *.usfm *.sfm > verses.txt
