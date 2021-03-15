@@ -11,13 +11,13 @@
 # checkChapterInRange("Gen.", 56)
 #    This will return True or False depending on if the chapter number makes sense.
 #    For Genesis, < 0 or > 50 returns False, otherwise returns True.
-# checkVerseInRange("Rev", 22, 21)
-# checkVerseInRange("Rev", 22, 22)
+# checkVerseInRange("Rev", 22, 21) <== returns True
+# checkVerseInRange("Rev", 22, 22) <== returns False
 #     This function is the most complicated. We built from the BI English Model
 #     a database of book+chapter => verses in that chapter. This allows us to
 #     load the database (from verses.pkl) and query it for the info we need.
 # 
-# There are miscellaneous dicdtionaries that may be helpful to you for other tasks.
+# There are miscellaneous dictionaries that may be helpful to you for other tasks.
 # You can look through the code below to find them. Feel free to use them, but
 # know that they may change. I'll try to keep the above fairly stable.
 #----------------------------------------------------------------------------
