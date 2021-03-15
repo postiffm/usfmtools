@@ -20,7 +20,7 @@ def main():
     file = sys.argv[1]
     print(f"Reading from {file}")
     verseDict = load_obj(file)
-    print("Data type after reconstruction : ", type(verseDict)) 
+    print("Data type after reload : ", type(verseDict)) 
     print(verseDict)
 
 if __name__ == '__main__':

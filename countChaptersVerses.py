@@ -19,7 +19,7 @@ import regex
 import functools
 import sys
 import os
-import pickle # for serializing dictionary to a file
+import pickle # for serializing dictionary to/from a file
 
 DEBUG = False
 def debug(msg:str, lineEnd=''):

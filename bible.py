@@ -1,4 +1,26 @@
 # Bible information for our work with Bibles International
+# Matt Postiff (c) 2021 postiffm@gmail.com
+
+#----------------------------------------------------------------------------
+# Using this API
+#
+# import bible
+# refEncode("Gen", 1, 1))
+#    This will return a string with that reference encoded according to our XML
+#    usage.
+# checkChapterInRange("Gen.", 56)
+#    This will return True or False depending on if the chapter number makes sense.
+#    For Genesis, < 0 or > 50 returns False, otherwise returns True.
+# checkVerseInRange("Rev", 22, 21)
+# checkVerseInRange("Rev", 22, 22)
+#     This function is the most complicated. We built from the BI English Model
+#     a database of book+chapter => verses in that chapter. This allows us to
+#     load the database (from verses.pkl) and query it for the info we need.
+# 
+# There are miscellaneous dicdtionaries that may be helpful to you for other tasks.
+# You can look through the code below to find them. Feel free to use them, but
+# know that they may change. I'll try to keep the above fairly stable.
+#----------------------------------------------------------------------------
 
 # Dictionary that gives you a quick conversion from number to canonical book name,
 # that is, the user-visible nice form of the name that BI uses for book abbreviations.
@@ -272,6 +294,9 @@ usfmIDToBook = {
 "REV" : "Rev" 
 }
 
+# Reverse of the above dictionary. This lets you get from USFM ID to canonical book name
+bookToUSFMId = dict((book, usfm) for usfm, book in usfmIDToBook.items())
+
 numberOfChapters = {
     "Gen": 50,
     "Exo": 40,
@@ -341,7 +366,8 @@ numberOfChapters = {
     "Rev": 22
 }
 
-# Also need function to check that chapters and verses are in proper ranges for every book and chapter of the Bible
+# Also need functions to check that chapters and verses are in proper ranges 
+# for every book and chapter of the Bible
 def checkChapterInRange(book:str, chapter:int) -> bool:
     book = normalizeBook(book)
     if (chapter > 0 and chapter <= numberOfChapters.get(book)):
@@ -356,6 +382,8 @@ def testChapterRange():
 
 #testChapterRange()
 
+import pickle # for serializing dictionary to/from a file
+
 # For saving and restoring the above verse dictionary to a file
 def save_obj(obj, name):
     with open(name + '.pkl', 'wb') as f:
@@ -365,15 +393,29 @@ def load_obj(name):
     with open(name + '.pkl', 'rb') as f:
         return pickle.load(f)
 
-load_obj()
+numberOfVerses = load_obj("verses")
+#print("Data type after reload : ", type(numberOfVerses))
+print(numberOfVerses)
 
 def checkVerseInRange(book:str, chapter:int, verse:int) -> bool:
     book = normalizeBook(book)
-    return True
+    chapterOK = checkChapterInRange(book, chapter)
+    if (chapterOK == False):
+        return False
+    # Complication: the way you index the auto-generated numberOfVerses dictionary 
+    # is to use the USFM ID, not the canonical book name. So we have to convert to that...
+    usfmID = bookToUSFMId[book]
+    rightNumVerses = int(numberOfVerses[(usfmID, str(chapter))])
+    if (verse > 0 and verse <= rightNumVerses):
+        return True
+    print(f"Error: Verse {verse} is out of range for {book} {chapter}")
+    return False
 
 def testVerseRange():
+    checkVerseInRange("Rev", 22, 21)
+    checkVerseInRange("Rev", 22, 22)
+    checkVerseInRange("Rev", 23, 22)
     checkVerseInRange("Gen.", 50, 240)
-    checkVerseInRange("Rev", 21, 0)
     checkVerseInRange("Mat", 1, 20)
     checkVerseInRange("Mat", 1, 29)
     return True
