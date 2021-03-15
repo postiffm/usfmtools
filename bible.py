@@ -78,6 +78,8 @@ bookToNumber = dict((book, number) for number, book in numberToBook.items())
 # because there is a one-to-one mapping in the original dictionary.
 
 # Fix up book names, like Gen., so they are what we expect - no trailing periods, etc.
+# I expect there will be lots of other lookups we need to do here, like another table 
+# to translate from one style of name to another. We shall see what the data presents to us.
 def normalizeBook(book:str) -> str:
     if (book[-1] == "."):
         book = book[0:-1]
@@ -127,9 +129,96 @@ def testRefEncode():
 
 #testRefEncode()
 
+numberOfChapters = {
+    "Gen": 50,
+    "Exo": 40,
+    "Lev": 27,
+    "Num": 36,
+    "Deu": 34,
+    "Jos": 24,
+    "Jdg": 21,
+    "Rut": 4,
+    "1Sa": 31,
+    "2Sa": 24,
+    "1Ki": 22,
+    "2Ki": 25,
+    "1Ch": 29,
+    "2Ch": 36,
+    "Ezr": 10,
+    "Neh": 13,
+    "Est": 10,
+    "Job": 42,
+    "Psa": 150,
+    "Pro": 31,
+    "Ecc": 12,
+    "Sol": 8,
+    "Isa": 66,
+    "Jer": 52,
+    "Lam": 5,
+    "Eze": 48,
+    "Dan": 12,
+    "Hos": 14,
+    "Joe": 3,
+    "Amo": 9,
+    "Oba": 1,
+    "Jon": 4,
+    "Mic": 7,
+    "Nah": 3,
+    "Hab": 3,
+    "Zep": 3,
+    "Hag": 2,
+    "Zec": 14,
+    "Mal": 4,
+    "Mat": 28,
+    "Mar": 16,
+    "Luk": 24,
+    "Joh": 21,
+    "Act": 28,
+    "Rom": 16,
+    "1Co": 16,
+    "2Co": 13,
+    "Gal": 6,
+    "Eph": 6,
+    "Phi": 4,
+    "Col": 4,
+    "1Th": 5,
+    "2Th": 3,
+    "1Ti": 6,
+    "2Ti": 4,
+    "Tit": 3,
+    "Phm": 1,
+    "Heb": 13,
+    "Jam": 5,
+    "1Pe": 5,
+    "2Pe": 3,
+    "1Jo": 5,
+    "2Jo": 1,
+    "3Jo": 1,
+    "Jud": 1,
+    "Rev": 22
+}
+
 # Also need function to check that chapters and verses are in proper ranges for every book and chapter of the Bible
 def checkChapterInRange(book:str, chapter:int) -> bool:
-    return True
+    book = normalizeBook(book)
+    if (chapter > 0 and chapter <= numberOfChapters.get(book)):
+        return True
+    print(f"Error: Chapter {chapter} is out of range for {book}")
+    return False
+
+def testChapterRange():
+    checkChapterInRange("Gen.", 56)
+    checkChapterInRange("Rev", 21)
+    checkChapterInRange("Mat", 0)
+
+#testChapterRange()
 
 def checkVerseInRange(book:str, chapter:int, verse:int) -> bool:
+    book = normalizeBook(book)
     return True
+
+def testVerseRange():
+
+    return True
+
+testVerseRange()
