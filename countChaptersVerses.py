@@ -19,76 +19,6 @@ from operator import itemgetter
 import functools
 import sys
 
-# Dictionary for quick conversion of book names.
-canonicalBookName = {
-"GEN" : "Gen.",
-"EXO" : "Ex.",
-"LEV" : "Lev.",
-"NUM" : "Num.",
-"DEU" : "Deut.",
-"JOS" : "Josh.",
-"JDG" : "Judg.",
-"RUT" : "Ruth",
-"1SA" : "1Sam.",
-"2SA" : "2Sam.",
-"1KI" : "1Kings",
-"2KI" : "2Kings",
-"1CH" : "1Chr.",
-"2CH" : "2Chr.",
-"EZR" : "Ezra",
-"NEH" : "Neh.",
-"EST" : "Esth.",
-"JOB" : "Job",
-"PSA" : "Psa.",
-"PRO" : "Prov.",
-"ECC" : "Eccl.",
-"SNG" : "Song",
-"ISA" : "Is.",
-"JER" : "Jer.",
-"LAM" : "Lam.",
-"EZK" : "Ezek.",
-"DAN" : "Dan.",
-"HOS" : "Hos.",
-"JOL" : "Joel",
-"AMO" : "Amos",
-"OBA" : "Obad.",
-"JON" : "Jonah",
-"MIC" : "Mic.",
-"NAM" : "Nah.",
-"HAB" : "Hab.",
-"ZEP" : "Zeph.",
-"HAG" : "Hag.",
-"ZEC" : "Zech.",
-"MAL" : "Mal.",
-"MAT" : "Matt.",
-"MRK" : "Mark",
-"LUK" : "Luke",
-"JHN" : "John",
-"ACT" : "Acts",
-"ROM" : "Rom.",
-"1CO" : "1Cor.",
-"2CO" : "2Cor.",
-"GAL" : "Gal.",
-"EPH" : "Eph.",
-"PHP" : "Phil.",
-"COL" : "Col.",
-"1TH" : "1Th.",
-"2TH" : "2Th.",
-"1TI" : "1Tim.",
-"2TI" : "2Tim.",
-"TIT" : "Titus",
-"PHM" : "Philem.",
-"HEB" : "Heb.",
-"JAS" : "James",
-"1PE" : "1Pet.",
-"2PE" : "2Pet.",
-"1JN" : "1John",
-"2JN" : "2John",
-"3JN" : "3John",
-"JUD" : "Jude",
-"REV" : "Rev.",
-}
-
 DEBUG = 0
 def debug(msg:str, lineEnd=''):
     if (DEBUG):
@@ -147,7 +77,7 @@ def countChaptersVerses(filename):
                     bookid == "XXE" or bookid == "XXF" or bookid == "XXG"):
                     file.close()
                     return
-                book = canonicalBookName[bookid]
+                book = bookid # instead of changing to any other naming system, keep it same
             elif (word == "\\c"):
                 if not words:
                     error(f"Missing chapter number in {filename}:{lineno}")
