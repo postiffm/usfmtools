@@ -15,10 +15,11 @@
 import copy
 import click
 import regex
-from operator import itemgetter
+#from operator import itemgetter
 import functools
 import sys
 import os
+import pickle # for serializing dictionary to a file
 
 DEBUG = 0
 def debug(msg:str, lineEnd=''):
@@ -32,6 +33,15 @@ def error(msg:str):
     sys.stderr.write(f"ERROR: {msg}\n")
 
 verseDict = {}
+
+# For saving and restoring the above verse dictionary to a file
+def save_obj(obj, name):
+    with open(name + '.pkl', 'wb') as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+def load_obj(name):
+    with open(name + '.pkl', 'rb') as f:
+        return pickle.load(f)
 
 def countChaptersVerses(filename):
     """Scans the entire USFM and re-formats for Accordance"""
@@ -117,6 +127,7 @@ def main(files):
     for filename in files:
         countChaptersVerses(filename)
     print(verseDict)
+    save_obj(verseDict, "verses")
 
 if __name__ == '__main__':
     main()
