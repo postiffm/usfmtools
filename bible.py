@@ -395,7 +395,7 @@ def load_obj(name):
 
 numberOfVerses = load_obj("verses")
 #print("Data type after reload : ", type(numberOfVerses))
-print(numberOfVerses)
+#print(numberOfVerses)
 
 def checkVerseInRange(book:str, chapter:int, verse:int) -> bool:
     book = normalizeBook(book)
@@ -420,4 +420,4 @@ def testVerseRange():
     checkVerseInRange("Mat", 1, 29)
     return True
 
-testVerseRange()
+#testVerseRange()
