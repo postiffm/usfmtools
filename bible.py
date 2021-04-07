@@ -152,7 +152,7 @@ def testRefEncode():
 
 #testRefEncode()
 
-# Dictionary for quick conversion of non-standard but nice-to-print book abbreviations
+# Dictionary for quick conversion to non-standard but nice-to-print book abbreviations
 # with periods
 usfmIDToShortBookName = {
 "GEN" : "Gen.",
@@ -297,6 +297,83 @@ usfmIDToBook = {
 # Reverse of the above dictionary. This lets you get from USFM ID to canonical book name
 bookToUSFMId = dict((book, usfm) for usfm, book in usfmIDToBook.items())
 
+# Dictionary to convert from common two letter abbreviations into USFM
+# ID. This doesn't work so well for examples like 1C/2C where it could
+# be 1 Chronicles or 1 Corinthians. You will need extra logic to
+# handle that case.
+TwoCharacterToUSFM = {
+    "GE" : "GEN",
+    "EX" : "EXO",
+    "LE" : "LEV",
+    "LV" : "LEV",
+    "NU" : "NUM",
+    "DE" : "DEU",
+    "DT" : "DEU",
+    "RU" : "RUT",
+    "1S" : "1SA",
+    "2S" : "2SA",
+    "1K" : "1KI",
+    "2K" : "2KI",
+    "NE" : "NEH",
+    "ES" : "EST",
+    "PS" : "PSA",
+    "PR" : "PRO",
+    "EC" : "ECC",
+    "SO" : "SNG",
+    "IS" : "ISA",
+    "JE" : "JER",
+    "DA" : "DAN",
+    "HO" : "HOS",
+    "AM" : "AMO",
+    "OB" : "OBA",
+    "MI" : "MIC",
+    "NA" : "NAM",
+    "HA" : "HAG",
+    "MA" : "MAL",
+    "MT" : "MAT",
+    "MK" : "MRK",
+    "LU" : "LUK",
+    "LK" : "LUK",
+    "JN" : "JHN",
+    "AC" : "ACT",
+    "RO" : "ROM",
+    "1C" : "1CO",
+    "2C" : "2CO",
+    "GA" : "GAL",
+    "EP" : "EPH",
+    "PP" : "PHP",
+    "CO" : "COL",
+    "1T" : "1TH",
+    "2T" : "2TH",
+    "TI" : "TIT",
+    "HB" : "HEB",
+    "JA" : "JAS",
+    "1P" : "1PE",
+    "2P" : "2PE",
+    "1J" : "1JN",
+    "2J" : "2JN",
+    "3J" : "3JN",
+    "RE" : "REV",
+    "RV" : "REV"
+}
+
+# Dictionary to convert the first three letters of the book into USFM
+# ID when not the same as the original first three letters.
+ThreeCharacterToUSFM = {
+"SON" : "SNG",
+"SOL" : "SNG",
+"EZE" : "EZK",
+"JOE" : "JOL",
+"NAH" : "NAM",
+"MAR" : "MRK",
+"JOH" : "JHN",
+"PHI" : "PHP",
+"JAM" : "JAS",
+"1JO" : "1JN",
+"2JO" : "2JN",
+"3JO" : "3JN"
+}
+
 numberOfChapters = {
     "Gen": 50,
     "Exo": 40,
@@ -393,6 +470,10 @@ def load_obj(name):
     with open(name + '.pkl', 'rb') as f:
         return pickle.load(f)
 
+# Load large dictionary that maps a pair like ('GEN', '1') to a number '31'
+# which is the number of verses in that chapter. This is for all 1100+ chapters
+# in the Bible. Use for verse range checks. It helps you find situations like
+# a verse reference Genesis 1:32 where the 32 is beyond the end of the chapter.
 numberOfVerses = load_obj("verses")
 #print("Data type after reload : ", type(numberOfVerses))
 #print(numberOfVerses)
