@@ -120,11 +120,18 @@ def countChaptersVerses(filename):
                     # Special case: we have a verse range, like 17-18
                     verses = verse.split("-")
                     verse1 = int(verses[0])
-                    verse2 = verses[1] # keep it a string for now
+                    verse2 = int(verses[1])
                     if (prevVerse+1 != verse1):
                         error(f"Verse number {verse1} in range {verse} is out of sequence in {book} {chapter}, last verse was {prevVerse}")
-                    prevVerse = verse1 # move one step forward
-                    verse = verse2
+                    if ((verse2 - verse1) > 0):
+                        # We have a range of verses like \v 1-4 or \v 1-3 or \v 5-6
+                        verse = verse2 # move to the end of the range
+                        prevVerse = verse2 - 1 # set up for below check; we know it is OK, but it doesn't!
+                    else:
+                        error(f"Verse number {verse1} in range {verse} is greater than the end of the range in {book} {chapter}, last verse was {prevVerse}")
+                else:
+                    # Just a regular single verse, like \v 4
+                    pass
                 # Now carry on as if no verse range was found
                 if (prevVerse+1 != int(verse)):
                     error(f"Verse number {verse} is out of sequence in {book} {chapter}, last verse was {prevVerse}")
