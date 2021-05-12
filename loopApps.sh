@@ -9,7 +9,9 @@ date > $LOGFILE
 LOGFILE="../loopAppsReport.txt"
 
 # For loop
-for f in akha bimodel bualkhaw chakma chiru dagaara darlong day \
+# I have omitted bimodel here because it has three sets of USFM in it
+# and that messes up verse checks.
+for f in akha bualkhaw chakma chiru dagaara darlong day \
 dendi falamchin haitiancreole hakhachin innerseraji inpuinaga kabiye kaowlu \
 kaulong koyraciini lamkaang luxembourgish manipuri matuchin mizo neao paite \
 quechua ranglong rathawi rawang rito sango sarakabademe sarakabanaa \
@@ -41,3 +43,6 @@ done
 
 # To gather all cross references in the  translations, do this:
 # find . -name usfm.xrefreport -exec cat {} \; > allxrefs.txt
+
+# To find all versification errors in the translations, do this:
+# find . -name verseErrors.txt -exec grep -H "ERROR" {} \; > allVerseErrors.txt
