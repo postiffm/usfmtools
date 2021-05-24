@@ -41,7 +41,7 @@ for file in sys.argv:
     for cnt, line in enumerate(fi):
         #print("Working on " + line)
         # Round 6 Fixes
-        # 6.1 - Fixed by hand ´w,, to ´wι,
+        # 6.1 - Fixed by hand ´w,, to ´wι, just noting it here.
         count6[1] = 1
         # 6.2 ´w,,,n‑´ all three , to iota
         if (regex.search(r"´w,,,n‑´", line) != None):
@@ -59,6 +59,9 @@ for file in sys.argv:
         if (regex.search(r"´W,a", line) != None):
             line = regex.sub(r"´W,a", r"´Wιa", line) # Note capital W not handled above
             count6[12] = count6[12] + 1  # Yes, it is 12
+        if (regex.search(r"‑dadhue˝", line) != None):
+            line = regex.sub(r"‑dadhue˝", r"‑da dhue˝", line)
+            count6[13] = count6[13] + 1
 
         fo.write(line)
 
