@@ -45,7 +45,11 @@ for file in sys.argv:
         if ("𝑙" in line):
             # Replace arithmetic small italic L U+1D459 with capital iota U+0399 (UTF-8 CE99)
             # which we believe corresponds to the lowercase iota U+03B9 (UTF-8 CEB9)
-            line = regex.sub("𝑙", "Ι", line)
+            # See subsequent email from Janet Austin 5/21/2021 which questions the above 
+            # change. MAP is unsure what needs to be done. It appears that the capital Iota
+            # is indistinguishable from the English capital I on the keyboard. Perhaps the font
+            # will make it better.
+            line = regex.sub("𝑙", "Ι", line) 
         if (regex.search(r"(\S),(\S)", line) != None):
             line = regex.sub(r"(\S),(\S)", r"\1ι\2", line)
         fo.write(line)
