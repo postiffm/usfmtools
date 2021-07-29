@@ -16,7 +16,7 @@ dendi falamchin haitiancreole hakhachin innerseraji inpuinaga kabiye kaowlu \
 kaulong koyraciini lamkaang luxembourgish manipuri matuchin mizo neao paite \
 quechua ranglong rathawi rawang rito sango sarakabademe sarakabanaa \
 saramadjingaye sarangam simte tagalog taisun tangkhulnaga tenek tumak \
-waali warao zokam zotung
+waali warao zokam zotung mbur
 do
 
 cd $f
