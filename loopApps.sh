@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ls -l | grep "drw" | wc -l
-# presently (2/28/2021 shows 45 apps)
+# presently (10/26/2021 shows 48 apps)
 
 LOGFILE="loopAppsReport.txt"
 date > $LOGFILE
@@ -11,12 +11,12 @@ LOGFILE="../loopAppsReport.txt"
 # For loop
 # I have omitted bimodel here because it has three sets of USFM in it
 # and that messes up verse checks.
-for f in akha bualkhaw chakma chiru dagaara darlong day \
+for f in akha bualkhaw chakma chiru dagaara dagba darlong day \
 dendi falamchin haitiancreole hakhachin innerseraji inpuinaga kabiye kaowlu \
 kaulong koyraciini lamkaang luxembourgish manipuri matuchin mizo neao paite \
 quechua ranglong rathawi rawang rito sango sarakabademe sarakabanaa \
 saramadjingaye sarangam simte tagalog taisun tangkhulnaga tenek tumak \
-waali warao zokam zotung mbur
+waali warao zarma zokam zotung mbur
 do
 
 cd $f
@@ -27,6 +27,8 @@ echo "===================================" >> $LOGFILE
 ../../usfmtools/usfmHealthReport.sh >> $LOGFILE
 cat usfm.distilledxrefreport >> $LOGFILE
 grep "This marker" markers.txt >> $LOGFILE
+cat verseErrors.txt >> $LOGFILE
+git status >> $LOGFILE
 cd ..
 
 done
