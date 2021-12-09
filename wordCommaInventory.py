@@ -5,9 +5,9 @@ import sys
 import io
 
 # Matt Postiff, November 25, 2021
-# Build a "comma inventory" from SFM. Originally designed for 
-# the Neao...to see if we can find patterns that can be replaced to
-# correct comma-should-be-iota.
+# Build a "words-followed-by-commas inventory" from SFM. Originally 
+# designed for the Neao...to see if we can find patterns that can be 
+# replaced to correct comma-should-be-iota.
 
 if len(sys.argv) < 2:
 	print(f"Usage: {sys.argv[0]} file [file ...]\n")
@@ -29,17 +29,15 @@ for file in sys.argv:
 
     for cnt, line in enumerate(fi):
         # Build dictionary for , and show chars before and after
-        r = regex.findall(r".{0,1},.{0,1}", line)
+        r = regex.findall(r"\w+, ", line)
         #print(r)
         for entry in r:
-            entry = entry.replace("\r", ' ') # Replace <CR> with regular space to reduce entries...
             if entry in d:
                 d[entry] = d[entry]+1
             else:
                 d[entry] = 1
 
 for entry in d:
-    newEntry = entry.replace("\r", '<CR>')
-    print(f"'{newEntry}'\t{d[entry]}")
-
+    print(f"'{entry}'\t{d[entry]}")
+print(f"Different words ending with comma = {len(d.keys())}")
 fi.close()
