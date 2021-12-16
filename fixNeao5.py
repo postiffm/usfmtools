@@ -84,32 +84,49 @@ for file in sys.argv:
         #line = replaceUSFM(line, r" Dh,", r" Dhι", 27) # Actually did 32 times
     # All of the above done at or before usfm/neao git hash e8bab77
 
-    # All below done and committed at usfm/neao git hash 543ae57
-        line = replaceUSFM(line, r"Zudas,", r"Zudasι", 1) # Verified 18 times
-        line = replaceUSFM(line, r"seaZuifʋn,", r"seaZuifʋnι", 2) # Verified 39 times
-        line = replaceUSFM(line, r"seazuifʋn,", r"seaZuifʋnι", 2) # Verified 1 time; 40 with above
-        line = replaceUSFM(line, r" ‑, ", r" ‑ι ", 3) # Verified 121 times; 122 found by script?
-        line = replaceUSFM(line, r"Glɛk,", r"Glɛkι", 4) # Verified 18 times, e.g. Acts 6:1
-        line = replaceUSFM(line, r"Glek,", r"Glɛkι", 4) # Verified 1 time, total 19 with above, Acts 17:12
-        line = replaceUSFM(line, r" s, ", r" sι ", 5) # Verified 23 times
-        line = replaceUSFM(line, r"Ananias,", r"Ananiasι", 6) # Verified 10 times
-        line = replaceUSFM(line, r" An,", r" Anι", 7) # Verified 3 times
-        line = replaceUSFM(line, r" ´z, ", r" ´zι ", 8) # Verified 9 times
-        line = replaceUSFM(line, r"´Jrʋgɔɔbhʋ,", r"´Jrʋgɔɔbhʋι", 9) # Verified 1 time
-        line = replaceUSFM(line, r" gl, ", r" glι ", 10) # Verified 10 times
-        line = replaceUSFM(line, r" nyn,", r" nynι", 11)  # Verified 10 times, like Acts 5:37, but without tone mark
-        line = replaceUSFM(line, r"Elɔd,", r"Elɔdι", 12)  # Verified 20 times
-        line = replaceUSFM(line, r"Pɔns,", r"Pɔnsι", 13)  # Verified 1 time
-        line = replaceUSFM(line, r"klandh,", r"klandhι", 14)  # Verified 2 times
-        line = replaceUSFM(line, r"bhʋ,", r"bhʋι", 15)  # Verified 43 times; 42 found by this script?
-        line = replaceUSFM(line, r"Izaak,", r"Izaakι", 16)  # Verified 3 times
-        line = replaceUSFM(line, r"˝Duud,", r"˝Duudι", 17)  # Verified 2 times
-        line = replaceUSFM(line, r"˝duud,", r"˝duudι", 18)  # Verified 2 times
-        line = replaceUSFM(line, r"Paatɛs,", r"Paatɛsι", 19)  # Verified 1 time ???
-        line = replaceUSFM(line, r"Silɛn,", r"Silɛnι", 20)  # Verified 5 times
-        line = replaceUSFM(line, r"gbl,", r"gblι", 21)  # Verified 5 times
-        line = replaceUSFM(line, r" D,", r" Dι", 22)  # Verified 6 times, all at start of sentence. 7 found by script is correct; Paratext missed one
-        line = replaceUSFM(line, r"Klɛt,", r"Klɛtι", 23)  # Verified 3 times
+    # Round 3: All below done and committed at usfm/neao git hash 543ae57 12/14/2021
+        #line = replaceUSFM(line, r"Zudas,", r"Zudasι", 1) # Verified 18 times
+        #line = replaceUSFM(line, r"seaZuifʋn,", r"seaZuifʋnι", 2) # Verified 39 times
+        #line = replaceUSFM(line, r"seazuifʋn,", r"seaZuifʋnι", 2) # Verified 1 time; 40 with above
+        #line = replaceUSFM(line, r" ‑, ", r" ‑ι ", 3) # Verified 121 times; 122 found by script?
+        #line = replaceUSFM(line, r"Glɛk,", r"Glɛkι", 4) # Verified 18 times, e.g. Acts 6:1
+        #line = replaceUSFM(line, r"Glek,", r"Glɛkι", 4) # Verified 1 time, total 19 with above, Acts 17:12
+        #line = replaceUSFM(line, r" s, ", r" sι ", 5) # Verified 23 times
+        #line = replaceUSFM(line, r"Ananias,", r"Ananiasι", 6) # Verified 10 times
+        #line = replaceUSFM(line, r" An,", r" Anι", 7) # Verified 3 times
+        #line = replaceUSFM(line, r" ´z, ", r" ´zι ", 8) # Verified 9 times
+        #line = replaceUSFM(line, r"´Jrʋgɔɔbhʋ,", r"´Jrʋgɔɔbhʋι", 9) # Verified 1 time
+        #line = replaceUSFM(line, r" gl, ", r" glι ", 10) # Verified 10 times
+        #line = replaceUSFM(line, r" nyn,", r" nynι", 11)  # Verified 10 times, like Acts 5:37, but without tone mark
+        #line = replaceUSFM(line, r"Elɔd,", r"Elɔdι", 12)  # Verified 20 times
+        #line = replaceUSFM(line, r"Pɔns,", r"Pɔnsι", 13)  # Verified 1 time
+        #line = replaceUSFM(line, r"klandh,", r"klandhι", 14)  # Verified 2 times
+        #line = replaceUSFM(line, r"bhʋ,", r"bhʋι", 15)  # Verified 43 times; 42 found by this script?
+        #line = replaceUSFM(line, r"Izaak,", r"Izaakι", 16)  # Verified 3 times
+        #line = replaceUSFM(line, r"˝Duud,", r"˝Duudι", 17)  # Verified 2 times
+        #line = replaceUSFM(line, r"˝duud,", r"˝duudι", 18)  # Verified 2 times
+        #line = replaceUSFM(line, r"Paatɛs,", r"Paatɛsι", 19)  # Verified 1 time ???
+        #line = replaceUSFM(line, r"Silɛn,", r"Silɛnι", 20)  # Verified 5 times
+        #line = replaceUSFM(line, r"gbl,", r"gblι", 21)  # Verified 5 times
+        #line = replaceUSFM(line, r" D,", r" Dι", 22)  # Verified 6 times, all at start of sentence. 7 found by script is correct; Paratext missed one
+        #line = replaceUSFM(line, r"Klɛt,", r"Klɛtι", 23)  # Verified 3 times
+
+    # Round 4: All below done and committed at usfm/neao git hash 6ffbbb0 12/15/2021
+        #line = replaceUSFM(line, r"´W,", r"´Wι", 1)  # 9 times, always beginning of sentence
+        #line = replaceUSFM(line, r"waann.aw,", r"waannawι", 2)  # 2 times Acts 10:12, 11:6 extra period 
+        #line = replaceUSFM(line, r"Waannaw,", r"Waannawι", 3)  # 1 time Mark 4:4
+        #line = replaceUSFM(line, r"waannaw,", r"waannawι", 4)  # 1 time Mark 4:32
+        #line = replaceUSFM(line, r"Taas,", r"Taasι", 5)  # 3 times
+        #line = replaceUSFM(line, r"w,", r"wι", 6)  # 5 times
+        #ine = replaceUSFM(line, r"Silis,", r"Silisι", 7)  # 1 time
+        #line = replaceUSFM(line, r"Damas,", r"Damasι", 8)  # 8 times
+        #line = replaceUSFM(line, r"‑d,", r"‑dι", 9)  # 11 times
+        #line = replaceUSFM(line, r"pood,", r"poodι", 10)  # 2 times
+        #line = replaceUSFM(line, r"Pood,", r"Poodι", 11)  # 1 times
+        #line = replaceUSFM(line, r"Antiɔs,", r"Antiɔsι", 12)  # 14 times
+        #line = replaceUSFM(line, r"Etiɛn,", r"Etiɛnι", 13)  # 9 times
+        #line = replaceUSFM(line, r"Paamιnas,", r"Paamιnasι", 14)  # 1 time
+        #line = replaceUSFM(line, r"´klejedh,", r"´kle´jedhι", 15)  # 3 times
 
         fo.write(line)
 
