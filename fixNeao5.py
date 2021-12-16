@@ -128,6 +128,22 @@ for file in sys.argv:
         #line = replaceUSFM(line, r"Paamιnas,", r"Paamιnasι", 14)  # 1 time
         #line = replaceUSFM(line, r"´klejedh,", r"´kle´jedhι", 15)  # 3 times
 
+    # Round 5: All below done and committed at usfm/neao git hash 0d56351 (12/16/2021)
+        #line = replaceUSFM(line, r"bhʋdh,", r"bhʋdhι", 1)  # 3 times
+        #line = replaceUSFM(line, r"´y,", r"´yι", 2)  # 26 times
+        #line = replaceUSFM(line, r"paadh,", r"paadhι", 3)  # 14 times
+        #line = replaceUSFM(line, r"legliz,", r"leglizι", 4)  # 30 times
+        #line = replaceUSFM(line, r"Azɔt,", r"Azɔtι", 5)  # 1 times
+        #line = replaceUSFM(line, r"´klejeɛ‑", r"´kle´jeɛ‑", 6)  # 24 times
+        #ine = replaceUSFM(line, r"´Klejeɛ‑", r"´Kle´jeɛ‑", 7)  # 2 times
+        #line = replaceUSFM(line, r"Lid,", r"Lidι", 8)  # 3 times
+        #line = replaceUSFM(line, r"Dɔɔkas,", r"Dɔɔkasι", 9)  # 2 times
+        #line = replaceUSFM(line, r"´wl,", r"´wlι", 10)  # 1 times Acts 9:39
+        #line = replaceUSFM(line, r"˝wwli", r"wwli˝", 11)  # 506 times
+        #line = replaceUSFM(line, r"Legliz,", r"Leglizι", 12)  # 4 times, see above rule 4, capitalized version of it
+
+kr, # Acts 11:30 , where else?
+
         fo.write(line)
 
 fi.close()
