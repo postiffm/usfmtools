@@ -141,8 +141,20 @@ for file in sys.argv:
         #line = replaceUSFM(line, r"´wl,", r"´wlι", 10)  # 1 times Acts 9:39
         #line = replaceUSFM(line, r"˝wwli", r"wwli˝", 11)  # 506 times
         #line = replaceUSFM(line, r"Legliz,", r"Leglizι", 12)  # 4 times, see above rule 4, capitalized version of it
-
-kr, # Acts 11:30 , where else?
+    
+    # Round 6: All below done and committed at usfm/nheao git hash ___ (12/18/2021)
+        line = replaceUSFM(line, r"kr,", r"krι", )  # 4 times  Mark 16:10, Acts 11:30, 21:35; 1Pe 4:11 (with a tone mark error too fixed by hand)
+        line = replaceUSFM(line, r"Mak,", r"Makι", )  # 6 times Mark 1:0 2x, Acts 12:12, 12:25, 15:37, 1pe 5:13
+        line = replaceUSFM(line, r"nιn,", r"nιnι", )  # 3 times Mark 7:4, 8, Acts 12:10
+        line = replaceUSFM(line, r"Lod,", r"Lodι", )  # 5 times Acts 12:13, 18:2, 23:26, Rev 4:3, 21:19 which covers Lod, Klod, and emelod,
+        line = replaceUSFM(line, r"lod,", r"lodι", )  # Combined with above
+        line = replaceUSFM(line, r"Felis,", r"Felisι", )  # 10 times
+        line = replaceUSFM(line, r"´yι,", r"´yιι", )  # 3 times
+        line = replaceUSFM(line, r"wwɛɛan", r"wwɛɛ.an", )  # 51 times. This is very strange to have a period mid-word.
+        line = replaceUSFM(line, r"Liitr,", r"Liitrι", )  #  7 times
+        line = replaceUSFM(line, r"nyʋsʋ,", r"nyʋsʋι", )  # 4 times
+        line = replaceUSFM(line, r"Nyʋsʋ,, r"Nyʋsʋι", )  # 1 time, combined with above
+        line = replaceUSFM(line, r"Masedoan,", r"Masedoanι", )  # 10 times
 
         fo.write(line)
 
