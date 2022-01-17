@@ -32,6 +32,8 @@ def error(msg:str):
     # Do not stop in case of this error so that user can see all errors easily at one run
     sys.stderr.write(f"ERROR: {msg}\n")
 
+# Dictionary of tuple => integer, where tuple is (book name, chapter number) and integer 
+# is highest verse number found in that chapter.
 verseDict = {}
 
 # For saving and restoring the above verse dictionary to a file
@@ -115,6 +117,10 @@ def countChaptersVerses(filename):
                 verse = words.pop(0)
                 debug(f"DEBUG8: Verse {verse}")
                 # Verse numbers should be monotonically increasing by one every time from the previous one
+                try: chapter
+                except NameError: 
+                    error(f"Missing chapter in {book} or verse number {verse} is not within a chapter??")
+                    exit(1)
                 prevVerse = int(verseDict.get((book, chapter), 0))
                 if ("-" in verse):
                     # Special case: we have a verse range, like 17-18
