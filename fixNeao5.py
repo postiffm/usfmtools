@@ -10,6 +10,13 @@ import io
 
 # Explanation: Replace all commas-after-ton-markings with ι iota
 
+# There is a question about the proper character here. I think the one we want is Unicode 0269, 
+# Latin small letter iota. It appears that there are some greek iota characters in the Nea 
+# also, which are Unicode 03B9. These should be combined, I would supposed, at some point.
+# See the Paratext character inventory.
+# The capital version is 0196 Latin capital letter iota Ɩ but with the cross at the top it does 
+# not look like how it is typeset in the Neao print Bible
+
 count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 # line = text to search
 # old = the text you are searching for
@@ -142,19 +149,28 @@ for file in sys.argv:
         #line = replaceUSFM(line, r"˝wwli", r"wwli˝", 11)  # 506 times
         #line = replaceUSFM(line, r"Legliz,", r"Leglizι", 12)  # 4 times, see above rule 4, capitalized version of it
     
-    # Round 6: All below done and committed at usfm/nheao git hash 5bb4b48 (12/18/2021)
-        line = replaceUSFM(line, r"kp,", r"kpι", 1)  # 4 times  Mark 16:10, Acts 11:30, 21:35; 1Pe 4:11 (with a tone mark error too fixed by hand)
-        line = replaceUSFM(line, r"Mak,", r"Makι", 2)  # 6 times Mark 1:0 2x, Acts 12:12, 12:25, 15:37, 1pe 5:13
-        line = replaceUSFM(line, r"nιn,", r"nιnι", 3)  # 3 times Mark 7:4, 8, Acts 12:10
-        line = replaceUSFM(line, r"Lod,", r"Lodι", 4)  # 1 times Acts 12:13, 18:2, 23:26, Rev 4:3, 21:19 which covers Lod, Klod, and emelod,
-        line = replaceUSFM(line, r"lod,", r"lodι", 5)  # 4 ombined with above
-        line = replaceUSFM(line, r"Felis,", r"Felisι", 6)  # 10 times
-        line = replaceUSFM(line, r"´yι,", r"´yιι", 7)  # 3 times
-        line = replaceUSFM(line, r"wwɛɛan", r"wwɛɛ.an", 8)  # 51 times. This is very strange to have a period mid-word.
-        line = replaceUSFM(line, r"Liitr,", r"Liitrι", 9)  #  7 times
-        line = replaceUSFM(line, r"nyʋsʋ,", r"nyʋsʋι", 10)  # 4 times
-        line = replaceUSFM(line, r"Nyʋsʋ,", r"Nyʋsʋι", 11)  # 1 time, combined with above
-        line = replaceUSFM(line, r"Masedoan,", r"Masedoanι", 12)  # 10 times
+    # Round 6: All below done and committed at usfm/neao git hash 5bb4b48 (12/18/2021)
+        #line = replaceUSFM(line, r"kp,", r"kpι", 1)  # 4 times  Mark 16:10, Acts 11:30, 21:35; 1Pe 4:11 (with a tone mark error too fixed by hand)
+        #line = replaceUSFM(line, r"Mak,", r"Makι", 2)  # 6 times Mark 1:0 2x, Acts 12:12, 12:25, 15:37, 1pe 5:13
+        #line = replaceUSFM(line, r"nιn,", r"nιnι", 3)  # 3 times Mark 7:4, 8, Acts 12:10
+        #line = replaceUSFM(line, r"Lod,", r"Lodι", 4)  # 1 times Acts 12:13, 18:2, 23:26, Rev 4:3, 21:19 which covers Lod, Klod, and emelod,
+        #line = replaceUSFM(line, r"lod,", r"lodι", 5)  # 4 ombined with above
+        #line = replaceUSFM(line, r"Felis,", r"Felisι", 6)  # 10 times
+        #line = replaceUSFM(line, r"´yι,", r"´yιι", 7)  # 3 times
+        #line = replaceUSFM(line, r"wwɛɛan", r"wwɛɛ.an", 8)  # 51 times. This is very strange to have a period mid-word.
+        #line = replaceUSFM(line, r"Liitr,", r"Liitrι", 9)  #  7 times
+        #line = replaceUSFM(line, r"nyʋsʋ,", r"nyʋsʋι", 10)  # 4 times
+        #line = replaceUSFM(line, r"Nyʋsʋ,", r"Nyʋsʋι", 11)  # 1 time, combined with above
+        #line = replaceUSFM(line, r"Masedoan,", r"Masedoanι", 12)  # 10 times
+
+    # Round 7 fixes: all below done and committed at usfm/neao git hash c3174f9
+        # NO! Many of these are fine. line = replaceUSFM(line, r"´tmʋ,", r"´tmʋι", 1)  # 10 times
+        line = replaceUSFM(line, r"dhiidh,", r"dhiidhι", 1)  # 5 times
+        line = replaceUSFM(line, r"Silas,", r"Silasι", 2)  # 15 times
+        line = replaceUSFM(line, r"Troas,", r"Troasι", 3)  # 4 times
+        line = replaceUSFM(line, r"Tesalɔs,", r"Tesalɔsι", 4)  # 7 times
+
+    # Before doing more, copy over hand changes from Paratext!
 
         fo.write(line)
 
