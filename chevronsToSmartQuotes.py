@@ -4,7 +4,7 @@ import re
 import sys
 import io
 
-# Matt Postiff, 2020
+# Matt Postiff, 2022
 # Do a python regex operation on a bunch of files, editing those files in place.
 # Each file is backed up first so as not to lose the original data.
 
