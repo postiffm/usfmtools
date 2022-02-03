@@ -165,13 +165,14 @@ for file in sys.argv:
 
     # Round 7 fixes: all below done and committed at usfm/neao git hash c3174f9
         # NO! Many of these are fine. line = replaceUSFM(line, r"´tmʋ,", r"´tmʋι", 1)  # 10 times
-        line = replaceUSFM(line, r"dhiidh,", r"dhiidhι", 1)  # 5 times
-        line = replaceUSFM(line, r"Silas,", r"Silasι", 2)  # 15 times
-        line = replaceUSFM(line, r"Troas,", r"Troasι", 3)  # 4 times
-        line = replaceUSFM(line, r"Tesalɔs,", r"Tesalɔsι", 4)  # 7 times
+        #line = replaceUSFM(line, r"dhiidh,", r"dhiidhι", 1)  # 5 times
+        #line = replaceUSFM(line, r"Silas,", r"Silasι", 2)  # 15 times
+        #line = replaceUSFM(line, r"Troas,", r"Troasι", 3)  # 4 times
+        #line = replaceUSFM(line, r"Tesalɔs,", r"Tesalɔsι", 4)  # 7 times
 
     # Before doing more, copy over hand changes from Paratext!
-
+    # Round 8 fixes: 
+    
         fo.write(line)
 
 fi.close()

@@ -196,7 +196,8 @@ def convertUSFMToAccordance(filename):
                 # We don't process the glossary book
                 if (bookid == "XXA" or bookid == "XXB" or bookid == "FRT" or bookid == "GLO" or 
                     bookid == "XXC" or bookid == "XXD" or bookid == "INT" or bookid == "BAK" or
-                    bookid == "XXE" or bookid == "XXF" or bookid == "XXG" or bookid == "TDX"):
+                    bookid == "XXE" or bookid == "XXF" or bookid == "XXG" or bookid == "CNC" or
+                    bookid == "TDX" or bookid == "OTH"):
                     file.close()
                     return
                 book = canonicalBookName[bookid]
