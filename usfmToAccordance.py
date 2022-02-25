@@ -150,7 +150,7 @@ def extraSplit(words:[]) -> []:
 # Special flag to indicate a need to print the first line in a special way
 justStarted = True
 
-def convertUSFMToAccordance(filename):
+def convertUSFMToAccordance(filename, paragraphMarkers):
     """Scans the entire USFM and re-formats for Accordance"""
     # Modes that the usfm scanner is in (parsing mode)
     NORMAL = 0 # regular Bible text
@@ -222,7 +222,7 @@ def convertUSFMToAccordance(filename):
                     # like the BOM.
                     print(f"{book} {chapter}:{verse}", end='')
                     justStarted = False
-                if (newParagraph == True):
+                if ((newParagraph == True) and (paragraphMarkers == True)):
                     print(" ¶", end='')
                     newParagraph = False # reset
                 mode = NORMAL
@@ -280,10 +280,12 @@ def printWord(word):
         print(" " + word, end='')
 
 @click.command()
+@click.option('--para/--no-para', default=True, help='Default true. If set, turns on paragraph markers in output.')
 @click.argument('files', nargs=-1)
-def main(files):
+def main(para, files):
+    """Given USFM input files, creates a single Accordance-compatible import text file."""
     for filename in files:
-        convertUSFMToAccordance(filename)
+        convertUSFMToAccordance(filename, para)
 
 if __name__ == '__main__':
     main()
