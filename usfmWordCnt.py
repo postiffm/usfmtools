@@ -35,8 +35,22 @@ def learnWord(wrd:str):
     if ((wrd[-1] == r".") or (wrd[-1] == r',')):
         debug(f"Removing last char of {wrd}")
         wrd = wrd[:-1]
-        if (len(wrd) == 0):
-            return
+
+    # Remove USFM marker at the end of the word like \w or \k*
+    # May have to do more than once for like  word\w*\f
+    while (True):
+        match = regex.search(r"\\[a-z]+(\*)?", wrd)
+        if match is not None:
+            wrd = wrd.replace(match.group(0), "")
+            debug(f"Removed marker {match.group(0)} from {wrd}")
+        else:
+            break;
+
+    # Remove other offensive characters
+    wrd = wrd.translate({ord(c): None for c in "()«»"})
+
+    if (len(wrd) == 0):
+        return
 
     if (wrd[0] == '\\'):
         # We have a USFM code. Ignore it.
@@ -51,9 +65,10 @@ def learnWord(wrd:str):
     else:
         if wrd in wordCntDict:
             wordCntDict[wrd] = wordCntDict[wrd]+1
+            debug(f"Seen again: {wrd}")
         else:
             wordCntDict[wrd] = 1
-            debug(f"Counted {wrd}")
+            debug(f"Added: {wrd}")
 
 def learnLine(line:str):
     debug(f"LINE: {line}")

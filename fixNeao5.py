@@ -172,7 +172,7 @@ for file in sys.argv:
 
     # Before doing more, copy over hand changes from Paratext!
     # Round 8 fixes: 
-    
+        
         fo.write(line)
 
 fi.close()
