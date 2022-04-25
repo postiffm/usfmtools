@@ -140,7 +140,13 @@ def convertVowels(wrd:str):
             newWrd = newWrd + wrdPart # We eliminate the hyphen in the new version of the language
             #NOT FOR NOW newWrd = regex.sub("\'", "", newWrd) # discard apostrophes when work is finalized
 
-    #elif (wrd.find('\'', 1) == 0): # was != -1 # This is a yyy'XXX paradigm word, where yyy will undergo vowel conversions
+    #elif (wrd.find('\'', 1) == 0): # This is a yyy'XXX paradigm word, where yyy will undergo vowel conversions
+    #    # The way this was originally written, the comparison was != -1, meaning that at least one ' was found.
+    #    # The problem with this was that several ticks could be found, and the assertion below would fail
+    #    # I rewrote it as == 1, thinking find returns a count, but it actually returns in INDEX. This 
+    #    # was wrong because it would find only words with a tick in the second position (idx = 1).
+    #    # I found that I could remove this section entirely and let the next elif cover it all.
+    #    # The next elif can cover everything, in fact, but for speed it is good to have a couple of special cases (above and below).
     #    debug(f"Case 2 - yyy'XXX paradigm")
     #    wrdAsList = wrd.split("'", -1) # Split on the apostrophe this case
     #    assert (len(wrdAsList) <= 2), f"ERROR: {wrd} has more than two sections like yyy'XXX'???"
