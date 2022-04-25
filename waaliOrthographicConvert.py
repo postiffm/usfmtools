@@ -12,7 +12,7 @@ import io
 # See waaliOrthographicConvert2.py for the version that uses the
 # same functions but prints out actual USFM.
 
-# Usage: python3 waaliOrthographicConvert.py waaliOrthoTest.SFM
+# Usage: python3 waaliOrthographicConvert.py waaliOrthoTest.SFM > waaliOrthoTest.out
 
 script = sys.argv.pop(0)
 
@@ -119,8 +119,15 @@ def convertVowels(wrd:str):
     # In other words, we ignored stressed portions of words and convert
     # the vowels in unstressed portions
     debug(f"Changing vowels in : {wrd}")
+    # Abstract examples
+    # 'XXX-yyy paradigm wor (or 'XXXXXX) where yyy will undergo vowel conversions
+    # yyy'XXX paradigm word, where yyy will undergo vowel conversions
+    # Strange hyphenated words, like yy'XXX-yyy where yyy will undergo vowel conversions
+    # Strange hyphenated words, like yyy'XX-yyy'XXXX where yyy will undergo vowel conversions
+    # yyyyyy (no ticks, no apostrophes), which all letters are candidates for vowel conversion
     newWrd = ""
     if (wrd[0] == '\''): # This is a 'XXX-yyy paradigm wor (or 'XXXXXX) where yyy will undergo vowel conversions
+        debug(f"Case 1 - 'XXX-yyy paradigm")
         wrdAsList = wrd.split("-", -1) # Split on the hyphen this case
         for wrdPart in wrdAsList:
             if (wrdPart[0] == '\''):
@@ -133,14 +140,17 @@ def convertVowels(wrd:str):
             newWrd = newWrd + wrdPart # We eliminate the hyphen in the new version of the language
             #NOT FOR NOW newWrd = regex.sub("\'", "", newWrd) # discard apostrophes when work is finalized
 
-    elif (wrd.find('\'', 1) == 1): # was != -1 # This is a yyy'XXX paradigm word, where yyy will undergo vowel conversions
-        wrdAsList = wrd.split("'", -1) # Split on the apostrophe this case
-        assert (len(wrdAsList) <= 2), f"ERROR: {wrd} has more than two sections like yyy'XXX'???"
-        wrdPart = convertUnstressedVowels(wrdAsList[0])
-        newWrd = wrdPart + '\'' + wrdAsList[1] # must add back in the apostrophe, as the split "deletes" it
+    #elif (wrd.find('\'', 1) == 0): # was != -1 # This is a yyy'XXX paradigm word, where yyy will undergo vowel conversions
+    #    debug(f"Case 2 - yyy'XXX paradigm")
+    #    wrdAsList = wrd.split("'", -1) # Split on the apostrophe this case
+    #    assert (len(wrdAsList) <= 2), f"ERROR: {wrd} has more than two sections like yyy'XXX'???"
+    #    wrdPart = convertUnstressedVowels(wrdAsList[0])
+    #    newWrd = wrdPart + '\'' + wrdAsList[1] # must add back in the apostrophe, as the split "deletes" it
 
-    elif (wrd.find('\'', 1) > 1): # More than one 'tick' or apostrophe.
-        # This is a strange word like kpe'ji-pegi'yiruu which is actually two words hyphenated together.
+    elif (wrd.find('\'', 1) >= 1): # A 'tick' or apostrophe is found some index > 0
+        debug(f"Case 3 - state machine")
+        # This is most often a word like yyy'XXX where yyy undergoes vowel conversions.
+        # This could be a strange word like kpe'ji-pegi'yiruu which is actually two words hyphenated together.
         # This overloads the hyphen, using it like English. Only the close vowels will be changed--those
         # in parts 1 and 3 of the word but not 2 and 4. Build a state machine to handle it.
         CLOSE = 1
@@ -155,12 +165,13 @@ def convertVowels(wrd:str):
                 state = CLOSE
                 newWrd = newWrd + ch
             else:
-                if (state == OPEN):
-                    newWrd = newWrd + ch # No conversion
-                else:
+                if (state == OPEN): # No vowel conversion
+                    newWrd = newWrd + ch 
+                else: # State is close, needs vowel conversion
                     newWrd = newWrd + convertUnstressedVowels(ch)
 
     else: # This is just a regular old word, no initial apostrophe, no mid-apostrophe, so convert all vowels
+        debug(f"Case 4: change all vowels")
         newWrd = convertUnstressedVowels(wrd)
 
     return newWrd
