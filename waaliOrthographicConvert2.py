@@ -135,7 +135,8 @@ for file in sys.argv:
     for cnt, line in enumerate(fi):
         #print(f"Processing line {cnt}")
         if (line.find('\\id') != -1):
-            fo.write(line) # do not change the \id line, just write it out as is
+            line = line.rstrip()
+            fo.write(line + " - Waalee Bible WBb22 b2\n") # do not character-convert the \id line, just write it out as is with an extra note (b = beta, b2 = beta2)
             continue
         words = line.split(' ', -1) # Split on spaces
         newLine = ""
