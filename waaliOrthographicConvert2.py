@@ -9,6 +9,13 @@ import io
 # given to us by Ron Webber. The results are a new USFM file. Old
 # one is renamed .bak
 
+# Future edition of this script should remove hyphens and apostrophes
+# along with whatever other changes are requested. The SFM that this
+# produces was the basis for the Waalee 2022 Bible. Immediately all
+# hyphens and apostrophes were removed from it by Ron Webber.
+# Therefore, what this script produces is out of date as of 4/28/2022.
+# But it served its purpose well!
+
 def replaceUSFM(line, old, new, ruleNum):
     global count
     if (regex.search(old, line) != None):
