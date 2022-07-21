@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 # (c) Jon Snoeberger, 2018
-# (c) Matt Postiff, 2020
 # Make sure you have python3 installed, and
 # To run this script on Ubuntu or WSL (Bash on Ubuntu on Windows = Windows Subsystem on Linux), do this:
 # sudo apt install python3-pip
