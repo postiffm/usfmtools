@@ -11,11 +11,18 @@ import io
 # Explanation: Replace all commas-after-ton-markings with ι iota
 
 # There is a question about the proper character here. I think the one we want is Unicode 0269, 
-# Latin small letter iota. It appears that there are some greek iota characters in the Nea 
-# also, which are Unicode 03B9. These should be combined, I would supposed, at some point.
+# Latin small letter iota. It appears that there are some greek iota characters in the Neao 
+# also, which are Unicode 03B9. These should be combined to all be the 0269.
 # See the Paratext character inventory.
+
 # The capital version is 0196 Latin capital letter iota Ɩ but with the cross at the top it does 
-# not look like how it is typeset in the Neao print Bible
+# not look like how it is typeset in the Neao print Bible. But I am settling on 0196 because in 
+# Unicode refs I see now (11/2/2022) it looks right (only in VS Code font does the top cross appear.)
+
+# The 0399 Unicode Greek Capital Iota looks similar but I want to standardize on Latin, not Greek.
+
+# So prepare to do a global replace 03B9 to 0269
+# and any 0399 to 0196
 
 count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 # line = text to search
