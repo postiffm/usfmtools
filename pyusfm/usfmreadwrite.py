@@ -74,21 +74,21 @@ if __name__ == '__main__':
 #     1:1
 #     ...
 
-# 3. I would also like a simple marker-checker
+# 3. I would also like a simple script checkMarkers.py
 #    for marker in approvedMarkerDB:
 #       print(f"{marker}\t{markerDB[marker]}", end='')
 #       if (not (marker in ApprovedMarkers)):
 #            print("\t<<== This marker is not in the BI approved list")
 #        else:
 #            print("")
-# Now, I have something like that already in findMarkers.py
+# I have something like that already in findMarkers.py
 # but it would be nice to neatly integrate that into the usfm.py
 # module. Of course, our "approved markers" will differ from other
 # people because Bibles International has its own "tribal custom"
 # but that's OK. We are working for them and can always adjust the
 # approved list later.
 
-# These are just two projects. The ultimate goal is to 
+# These are just three projects. The ultimate goal is to 
 # keep doing projects whereby we can expand the functionality 
 # of the usfm.py library and use it for many more things in 
 # the future.
