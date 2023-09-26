@@ -39,9 +39,15 @@ for file in sys.argv:
 	# prepare to write modified contents to the original filename
 	fo = io.open(file, mode="w", encoding="utf-8", newline='')
 
+	# To deal with the escapes, see stackoverflow.com/questions/58328587/ppython-3-7-4-re-error-bad-escape-s-at-position-0
+	newStr = "\\\zhash \u00ba \\\zhash*"
+	print(f"newStr = {newStr}")
+
 	for cnt, line in enumerate(fi):
 		#print("Working on " + line)
-		line = re.sub("#", "\zhash \u00ba \zhash*", line, count=0)
+		# Because the escapes are confusing, I am using a pre-made string here 
+		# instead of a string literal
+		line = re.sub("#", newStr, line, count=0)
 		fo.write(line)
 
 fi.close()
