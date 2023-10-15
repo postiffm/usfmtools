@@ -36,7 +36,7 @@ def main(files):
 if __name__ == '__main__':
     main()
 
-# 1. I would like to write another code that does this
+a# 1. I would like to write another code that does this
 # Usage: applyparagraphs.py bible1 bible2
 # What it does: take paragraphing from bible1 and apply 
 # it to bible2 (first removing existing paragraphs from 
