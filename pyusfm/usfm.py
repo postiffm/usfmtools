@@ -128,10 +128,9 @@ class Book:
 
     def load(self, FileName):
         """Reads in the entire USFM and stores it in our nascent data model"""
-        usfmCode = ""
-        markerPattern = r'\\([a-zA-Z0-9]+\*{0,1})'
-        markerPatternCompiled = regex.compile(markerPattern) # looking for a usfm \marker
-
+        # Be aware of there is a BOM in the file, \id will not match properly
+        # Need to more gracefully handle that situation. Until then, use removeBOM.py
+        # to clean the BOM out of the file.
         file = open(FileName,'r')
         for line in file:
             # Ignore blank lines
@@ -142,7 +141,7 @@ class Book:
             # Get the first marker
             u = ""
             marker = words.pop(0)
-            print(f'MARKER = ::{marker}::')
+            #print(f'MARKER = ::{marker}::')
             if (marker == "\\v"):  # Must escape the backslash in each of these checks
                 u = UsfmV(marker, words.pop(0), str(' '.join(words)))
             elif (marker == "\c"):
@@ -174,24 +173,11 @@ class Book:
                 # Prepend the marker back into the word list
                 words = [marker] + words
                 u = Usfm("", "", str(' '.join(words)))
-                print("New GENERIC USFM: ", end="")
-                u.print()
+                #print("New GENERIC USFM: ", end="")
+                #u.print()
 
             self.usfms.append(u)
 
-            #while words:
-                #word = words.pop(0)
-                # To find a single USFM marker, use the following (usual case):
-                #markerMatch = markerPatternCompiled.search(word)
-                #if (markerMatch != None): # word is a USFM marker
-
-                # But lines sometimes have multiple markers, so have to loop through:
-                #for markerMatch in regex.finditer(markerPatternCompiled, word):
-                    #usfmCode = markerMatch.group(1)
-                    #print(f"Marker {usfmCode}")
-                    #count = markerDB.get(usfmCode, 0)
-                    #markerDB[usfmCode] = count + 1;
-                
         # Close the file
         file.close()
     
@@ -237,7 +223,7 @@ class Book:
         # resulted in a file that had lines that needed combined.
         newu = [] # Since we have to remove lines, just build a new list of usfms
         for idx, u in enumerate(self.usfms):
-            u.print()
+            #u.print()
             if (isinstance(u, UsfmC) or 
                 isinstance(u, UsfmP) or 
                 isinstance(u, UsfmS) or
