@@ -5,9 +5,9 @@ import os.path
 # This uses the usfm.py module. 
 # What it does is load all the SFM files
 # you give it, but combine the lines of them
-# as per the needs of the Makusi project. OCR text
-# and hand edits result in a file that 
-# look like this:
+# as per the needs of the Makusi project. Scan + OCR 
+# + hand edits result in a file that looks like this:
+#
 #\v 1 Uurî Tiago wanî Paapa moropai Uyepotorîkon Jesus
 #Cristo poitorî pe. Seni kaarita yarimauya judeuyamî pia
 # and these need to be combined. Lines that end with -
@@ -21,16 +21,16 @@ def main(files):
         print("Usage: python3 combineLines.py *.txt")
         exit(1)
 
-    b = usfm.Bible("TestBible")
+    bibl = usfm.Bible("TestBible")
 
     for filename in files:
         if (os.path.exists(filename)):
-            b.loadBook(filename)
-            b.combineLines(filename)
+            bibl.loadBook(filename)
+            bk = bibl.lastBook()
+            bk.combineLines()
+            #bibl.printInternals()
             # And turn right around and print it
-
-    b.printBible(filename+".new")
-    b.printInternals()
+            bk.print(filename+".new")
 
 if __name__ == '__main__':
     main()

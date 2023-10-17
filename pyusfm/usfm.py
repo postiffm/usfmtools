@@ -18,36 +18,54 @@ class Usfm:
         self.content = Content
 
     def print(self):
-        # But I have to re-constitute the content
-        if (self.arg == ""):
-            print(f'{self.marker} {self.content}')    
+        # I have to re-constitute the content
+        if (self.marker != ""):
+            print(f'{self.marker}')
+        if (self.arg != ""):
+            print(f'{self.arg}')
+        if (self.content != ""):
+            print(f'{self.content}')
+
+    def append(self, usfmObject):
+        #print("ADDING CONTENT ", end="")
+        #usfmObject.print()
+        if (usfmObject.marker != ""):
+            print("ERROR: attempting to append USFM beginning with marker; unanticipated case: ", end="")
+            usfmObject.print()
         else:
-            print(f'{self.marker} {self.arg} {self.content}')
+            #print("BEFORE ADDING, CONTENT=", end="")
+            #self.print()
+            self.content = self.content + " " + usfmObject.content
+            #print("AFTER ADDING,  CONTENT=", end="")
+            #self.print()
 
 # Specialized classes for specific USFM markers
 class UsfmC(Usfm):
     # \c #
     def __init__(self, Marker, Number, ):
         super().__init__(Marker, Number, "")
-        self.number = Number
+        self.arg = Number # \c X, arg X is the chapter number
     def print(self):
-        print(f'{self.marker} {self.number}')
+        print(f'{self.marker} {self.arg}')
 
 class UsfmP(Usfm):
     # \p (paragraph marker)
     def __init__(self, Marker="p", Content=""):
         super().__init__(Marker, "", Content)
     def print(self):
-        print(f'{self.marker} {self.content}')
+        print(f'{self.marker}')
+        if (self.content != ""):
+            print(f'{self.content}')
+            # Not really sure why a \p line should have anything else on it...
 
 class UsfmV(Usfm):
     # \v # verse text
     def __init__(self, Marker, Number, Text):
         super().__init__(Marker, Number, Text)
-        self.number = Number
-        self.text = Text
+        self.arg = Number # \v X, where X is the verse number
+        self.content = Text
     def print(self):
-        print(f'{self.marker} {self.number} {self.text}')
+        print(f'{self.marker} {self.arg} {self.content}')
 
 class UsfmS(Usfm):
     # \s# Heading
@@ -56,6 +74,27 @@ class UsfmS(Usfm):
         self.heading = Heading
     def print(self):
         print(f'{self.marker} {self.heading}')
+
+class UsfmH(Usfm):
+    # \h Heading
+    def __init__(self, Marker, Content):
+        super().__init__(Marker, "", Content)
+    def print(self):
+        print(f'{self.marker} {self.content}')
+
+class UsfmTOC(Usfm):
+    # \toc# content
+    def __init__(self, Marker, Content):
+        super().__init__(Marker, "", Content)
+    def print(self):
+        print(f'{self.marker} {self.content}')
+
+class UsfmMT(Usfm):
+    # \mt# content
+    def __init__(self, Marker, Content):
+        super().__init__(Marker, "", Content)
+    def print(self):
+        print(f'{self.marker} {self.content}')
 
 class UsfmId(Usfm):
     # \id MAT <other text may appear here>
@@ -83,7 +122,9 @@ class Book:
     def printInternals(self):
         print(f'Data for {self.name}')
         for u in self.usfms:
-            print(type(u))
+            print(type(u), end="")
+            print(" :: ", end="")
+            u.print()
 
     def load(self, FileName):
         """Reads in the entire USFM and stores it in our nascent data model"""
@@ -101,21 +142,40 @@ class Book:
             # Get the first marker
             u = ""
             marker = words.pop(0)
-            #print(f'MARKER = {marker}')
-            if (marker == r"\v"):  # Note that without rawstring, \v is a special character
+            print(f'MARKER = ::{marker}::')
+            if (marker == "\\v"):  # Must escape the backslash in each of these checks
                 u = UsfmV(marker, words.pop(0), str(' '.join(words)))
             elif (marker == "\c"):
                 u = UsfmC(marker, words.pop(0))
             elif (marker == "\p"):
                 u = UsfmP(marker, str(' '.join(words)))
-            elif (marker == "\s" or marker == "\s1"):
+            elif (marker == "\\s" or marker == "\\s1" or marker == "\\s2"):
                 u = UsfmS(marker, str(' '.join(words)))
-            elif (marker == "\id"):
-                # \id MAT <other text may appear here>
+            elif (marker == "\\h"):
+                u = UsfmH(marker, str(' '.join(words)))
+            elif (marker == "\\toc1" or marker == "\\toc2" or marker == "\\toc3"):
+                u = UsfmTOC(marker, str(' '.join(words)))
+            elif (marker == "\\mt" or marker == "\\mt1" or marker == "\\mt2" or marker == "\\mt3"):
+                u = UsfmMT(marker, str(' '.join(words)))
+            elif (marker == "\\id"):
+                # \id MAT <other text may appear here but probably should not>
                 self.id = words.pop(0)
                 u = UsfmId(marker, self.id, str(' '.join(words)))
+                #print("New ID Marker: ", end="")
+                #u.print()
+            elif (marker[0] == "\\"):
+                # There is some other marker here, but I don't specifically care what it is
+                self.arg = words.pop(0)
+                u = Usfm(marker, self.arg, str(' '.join(words)))
+                #print("New UNKNOWN Marker: ", end="")
+                #u.print()
             else:
-                u = Usfm(marker, "", str(' '.join(words)))
+                # There is apparently no marker on this line. Not a really nice USFM line, but what we have
+                # Prepend the marker back into the word list
+                words = [marker] + words
+                u = Usfm("", "", str(' '.join(words)))
+                print("New GENERIC USFM: ", end="")
+                u.print()
 
             self.usfms.append(u)
 
@@ -172,7 +232,37 @@ class Book:
         for (id, ch, vs) in plist:
             pass # WORK ON THIS
 
-    def print(self):
+    def combineLines(self):
+        # This came from the Makusi project where scan+OCR+manual correct
+        # resulted in a file that had lines that needed combined.
+        newu = [] # Since we have to remove lines, just build a new list of usfms
+        for idx, u in enumerate(self.usfms):
+            u.print()
+            if (isinstance(u, UsfmC) or 
+                isinstance(u, UsfmP) or 
+                isinstance(u, UsfmS) or
+                isinstance(u, UsfmV) or
+                isinstance(u, UsfmId) or
+                isinstance(u, UsfmH) or
+                isinstance(u, UsfmTOC) or
+                isinstance(u, UsfmMT)):
+                # Do nothing but append the USFM to our new list
+                # It should not be followed by an non-marker line
+                newu.append(u)
+            else: # This line is not one of the above types; likely does not start w/ a marker
+                if (u.marker != ""):
+                    print("ERROR: Unanticipated case: ", end="")
+                    u.print()
+                else: # The line does not start with a marker, so append to end of prior
+                    #print(f"{u.marker} {u.arg} {u.content}")
+                    newu[-1].append(u)
+                    newu[-1].content = newu[-1].content.replace("- ", "")
+        # Now update the USFM
+        self.usfms = newu
+
+    def print(self, FileName):
+        #file = open(FileName,'w')
+        # use FileName later
         for u in self.usfms:
             u.print()
 
@@ -199,10 +289,12 @@ class Bible:
         book.load(FileName)
         self.books.append(book)
 
-    def printBible(self, FileName):
-        # USe FileName later
+    def lastBook(self):
+        return self.books[-1]
+
+    def print(self, FileName):
         for book in self.books:
-            book.print()
+            book.print(FileName)
 
 def main():
     print("This is the USFM library; you cannot run it on its own!")
