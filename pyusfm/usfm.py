@@ -241,9 +241,12 @@ class Book:
                     u.print()
                 else: # The line does not start with a marker, so append to end of prior
                     #print(f"{u.marker} {u.arg} {u.content}")
+                    # If you get an index out of range error here, twice it has been because the 
+                    # file has a byte-order mark at the beginning before the \id marker. Remove that
+                    # with python3 ../../usfmtools/pyusfm/removeBOM.py and you should be all set.
                     newu[-1].append(u)
                     newu[-1].content = newu[-1].content.replace("- ", "")
-        # Now update the USFM
+        # Now update the final USFM
         self.usfms = newu
 
     def print(self, FileName):
