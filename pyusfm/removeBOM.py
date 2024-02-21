@@ -5,6 +5,8 @@ import os.path
 # Remove the byte-order-mark (ef bb bf for UTF-8)
 # and rewrite the file. Side effect: also changes
 # the line endings from CRLF (Windows) to LF only.
+# I think this can also look like this:
+# bbef 5cbf ....
 
 @click.command()
 @click.argument('files', nargs=-1)

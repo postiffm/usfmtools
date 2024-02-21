@@ -104,6 +104,20 @@ class UsfmId(Usfm):
     def print(self):
         print(f'{self.marker} {self.id}')
 
+class UsfmM(Usfm):
+    # \m text
+    def __init__(self, Marker, Content):
+        super().__init__(Marker, "", Content)
+    def print(self):
+        print(f'{self.marker} {self.content}')
+
+class UsfmQ(Usfm):
+    # \q1 text
+    def __init__(self, Marker, Content):
+        super().__init__(Marker, "", Content)
+    def print(self):
+        print(f'{self.marker} {self.content}')
+
 class Book:
     # The layout of USFM is fairly flat, with a chapter mainly consisting
     # of a list of USFM elements one after the other. Some are nested, but
@@ -162,6 +176,10 @@ class Book:
                 u = UsfmId(marker, self.id, str(' '.join(words)))
                 #print("New ID Marker: ", end="")
                 #u.print()
+            elif (marker == "\\q1"):
+                u = UsfmQ(marker, str(' '.join(words)))
+            elif (marker == "\\m"):
+                u = UsfmM(marker, str(' '.join(words)))
             elif (marker[0] == "\\"):
                 # There is some other marker here, but I don't specifically care what it is
                 self.arg = words.pop(0)
@@ -219,11 +237,13 @@ class Book:
             pass # WORK ON THIS
 
     def combineLines(self):
-        # This came from the Makusi project where scan+OCR+manual correct
-        # resulted in a file that had lines that needed combined.
+        # This originated with the Makusi project where scan+OCR+manual correct
+        # resulted in a file that had lines that needed combined so that each
+        # verse resides on a line of text (if no \m or \q1, for example)
         newu = [] # Since we have to remove lines, just build a new list of usfms
         for idx, u in enumerate(self.usfms):
             #u.print()
+            #print("Processing above USFM")
             if (isinstance(u, UsfmC) or 
                 isinstance(u, UsfmP) or 
                 isinstance(u, UsfmS) or
@@ -235,6 +255,11 @@ class Book:
                 # Do nothing but append the USFM to our new list
                 # It should not be followed by an non-marker line
                 newu.append(u)
+            elif (isinstance(u, UsfmQ) or
+                  isinstance(u, UsfmM)):
+                # These markers start their own new line of USFM text
+                #print("New USFM line with q1 or m marker")
+                newu.append(u)
             else: # This line is not one of the above types; likely does not start w/ a marker
                 if (u.marker != ""):
                     print("ERROR: Unanticipated case: ", end="")
@@ -245,7 +270,9 @@ class Book:
                     # file has a byte-order mark at the beginning before the \id marker. Remove that
                     # with python3 ../../usfmtools/pyusfm/removeBOM.py and you should be all set.
                     newu[-1].append(u)
-                    newu[-1].content = newu[-1].content.replace("- ", "")
+                    #newu[-1].content = newu[-1].content.replace("- ", "")   # Does not work right for -- sequence
+                    #re.sub(pattern, replacement, string, count=0, flags=0)
+                    newu[-1].content = regex.sub("[^-]- ", "", newu[-1].content)
         # Now update the final USFM
         self.usfms = newu
 
