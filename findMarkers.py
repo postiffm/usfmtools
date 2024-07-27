@@ -30,11 +30,11 @@ ApprovedMarkers = {
   # Introductions
   'ili', 'imt1', 'imt2', 'is', 'ip', 'ipr', 'imq', 'iot', 'io1', 'io2', 'io3', 'ior', 'ior*', 'ie', 
   # Headings, references
-  'ms', 's', 's1', 's2', 'r', 'd', 'qa', 'rq', 'rq*', 'x', 'x*', 'xo',
+  'ms', 's', 's1', 's2', 'r', 'd', 'qa', 'rq', 'rq*', 'x', 'x*', 'xo', 'mr',
   # Chapters and verses
   'c', 'v', 
   # Paragraphs
-  'p', 'm', 'mi', 'nb', 'b',
+  'p', 'm', 'mi', 'nb', 'b', 'pi',
   # Poetry
   'q', 'q1', 'q2', 'qc', 'qs', 'qs*',
   # Lists

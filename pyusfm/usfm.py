@@ -158,9 +158,9 @@ class Book:
             #print(f'MARKER = ::{marker}::')
             if (marker == "\\v"):  # Must escape the backslash in each of these checks
                 u = UsfmV(marker, words.pop(0), str(' '.join(words)))
-            elif (marker == "\c"):
+            elif (marker == "\\c"):
                 u = UsfmC(marker, words.pop(0))
-            elif (marker == "\p"):
+            elif (marker == "\\p"):
                 u = UsfmP(marker, str(' '.join(words)))
             elif (marker == "\\s" or marker == "\\s1" or marker == "\\s2"):
                 u = UsfmS(marker, str(' '.join(words)))
@@ -181,10 +181,10 @@ class Book:
             elif (marker == "\\m"):
                 u = UsfmM(marker, str(' '.join(words)))
             elif (marker[0] == "\\"):
+                print("New UNKNOWN Marker: ", marker)
                 # There is some other marker here, but I don't specifically care what it is
                 self.arg = words.pop(0)
                 u = Usfm(marker, self.arg, str(' '.join(words)))
-                #print("New UNKNOWN Marker: ", end="")
                 #u.print()
             else:
                 # There is apparently no marker on this line. Not a really nice USFM line, but what we have
@@ -208,7 +208,7 @@ class Book:
             if (isinstance(u, UsfmP)):
                 nextu = self.usfms[idx+1]
                 if (not isinstance(nextu, UsfmV)):
-                    print(f'WARNING: USFM after \p is not \v in {self.id} {chapter}')
+                    print(f'WARNING: USFM after \\p is not \\v in {self.id} {chapter}')
                 verse = nextu.number
                 #print(f'{self.id} {chapter}:{verse}')
                 # Store in list of tuples
@@ -242,8 +242,8 @@ class Book:
         # verse resides on a line of text (if no \m or \q1, for example)
         newu = [] # Since we have to remove lines, just build a new list of usfms
         for idx, u in enumerate(self.usfms):
-            #u.print()
-            #print("Processing above USFM")
+            #print("Processing USFM >> ", end="")
+            #u.print()            
             if (isinstance(u, UsfmC) or 
                 isinstance(u, UsfmP) or 
                 isinstance(u, UsfmS) or
@@ -272,7 +272,18 @@ class Book:
                     newu[-1].append(u)
                     #newu[-1].content = newu[-1].content.replace("- ", "")   # Does not work right for -- sequence
                     #re.sub(pattern, replacement, string, count=0, flags=0)
-                    newu[-1].content = regex.sub("[^-]- ", "", newu[-1].content)
+                    # For lines that end with a dash (in Makusi), we remove the - and combine the two word parts.
+                    # They are hyphenated and in the USFM we need to get rid of the hyphen--and NOT the preceding character!
+                    newu[-1].content = regex.sub("([^-])- ", "\\1", newu[-1].content)
+
+                    # The below code never runs because \q1 markers are handled in the above elif. Hmmm.
+                    # But there is also a common case where a hyphenated word is split with a \q1 marker also.
+                    # The resulting combined string will be word- \q1 restofword and it should be combined
+                    # into wordrestofword. The \q1 marker goes away entirely. This happens in a context where
+                    # the prior line is also a \q1 marker. Our editors added too many \q1 markers to match
+                    # the formatting of the printed page, but really only one \q1 marker should have been used.
+                    #print(newu[-1].content)
+                    #newu[-1].content = regex.sub("[^-]- \\\\q1 ", "", newu[-1].content)
         # Now update the final USFM
         self.usfms = newu
 
