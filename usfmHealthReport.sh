@@ -9,4 +9,4 @@ grep 'Number of total xrefs' usfm.distilledxrefreport
 echo "Finding USFM markers...look in markers.txt"
 python3 ../../usfmtools/findMarkers.py *.SFM *.usfm *.sfm *.SFC > markers.txt
 # Get versification information from each translation
-../../usfmtools/countChaptersVerses.py *.SFM *.usfm *.sfm *.SFC >verseErrors.txt > verses.txt
+../../usfmtools/countChaptersVerses.py *.SFM *.usfm *.sfm *.SFC >& verseErrors.txt > verses.txt

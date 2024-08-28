@@ -111,6 +111,16 @@ class UsfmM(Usfm):
     def print(self):
         print(f'{self.marker} {self.content}')
 
+class UsfmR(Usfm):
+    # \r text like 
+    # \r (1,19-12,50) (after an \ms)
+    # or 
+    # \r (Mt 3,11-12; Mr 1,7-8; Nk 3,15-17) (after a \s1 line)
+    def __init__(self, Marker, Content):
+        super().__init__(Marker, "", Content)
+    def print(self):
+        print(f'{self.marker} {self.content}')
+
 class UsfmQ(Usfm):
     # \q1 text
     def __init__(self, Marker, Content):
@@ -168,7 +178,7 @@ class Book:
                 u = UsfmH(marker, str(' '.join(words)))
             elif (marker == "\\toc1" or marker == "\\toc2" or marker == "\\toc3"):
                 u = UsfmTOC(marker, str(' '.join(words)))
-            elif (marker == "\\mt" or marker == "\\mt1" or marker == "\\mt2" or marker == "\\mt3"):
+            elif (marker == "\\mt" or marker == "\\mt1" or marker == "\\mt2" or marker == "\\mt3" or marker == "\\ms"):
                 u = UsfmMT(marker, str(' '.join(words)))
             elif (marker == "\\id"):
                 # \id MAT <other text may appear here but probably should not>
@@ -180,6 +190,8 @@ class Book:
                 u = UsfmQ(marker, str(' '.join(words)))
             elif (marker == "\\m"):
                 u = UsfmM(marker, str(' '.join(words)))
+            elif (marker == "\\r"):
+                u = UsfmR(marker, str(' '.join(words)))
             elif (marker[0] == "\\"):
                 print("New UNKNOWN Marker: ", marker)
                 # There is some other marker here, but I don't specifically care what it is
@@ -251,16 +263,17 @@ class Book:
                 isinstance(u, UsfmId) or
                 isinstance(u, UsfmH) or
                 isinstance(u, UsfmTOC) or
-                isinstance(u, UsfmMT)):
+                isinstance(u, UsfmMT) or
+                isinstance(u, UsfmR)):
                 # Do nothing but append the USFM to our new list
-                # It should not be followed by an non-marker line
+                # It should not be followed by a non-marker line
                 newu.append(u)
             elif (isinstance(u, UsfmQ) or
                   isinstance(u, UsfmM)):
                 # These markers start their own new line of USFM text
                 #print("New USFM line with q1 or m marker")
                 newu.append(u)
-            else: # This line is not one of the above types; likely does not start w/ a marker
+            else: # This line is not one of the above types; likely does not start with a marker
                 if (u.marker != ""):
                     print("ERROR: Unanticipated case: ", end="")
                     u.print()
