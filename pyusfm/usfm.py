@@ -35,7 +35,12 @@ class Usfm:
         else:
             #print("BEFORE ADDING, CONTENT=", end="")
             #self.print()
+            #print("ADDITIONAL CONTENT via usfmObject.print=", end="")
+            #usfmObject.print()
+            #print("ADDITIONAL CONTENT via print usfmObject.content=", end="")
+            #print(f"{usfmObject.content}")
             self.content = self.content + " " + usfmObject.content
+            #print(f"{self.content}")
             #print("AFTER ADDING,  CONTENT=", end="")
             #self.print()
 
@@ -71,9 +76,8 @@ class UsfmS(Usfm):
     # \s# Heading
     def __init__(self, Marker, Heading):
         super().__init__(Marker, "", Heading)
-        self.heading = Heading
     def print(self):
-        print(f'{self.marker} {self.heading}')
+        print(f'{self.marker} {self.content}')
 
 class UsfmH(Usfm):
     # \h Heading
@@ -255,7 +259,7 @@ class Book:
         newu = [] # Since we have to remove lines, just build a new list of usfms
         for idx, u in enumerate(self.usfms):
             #print("Processing USFM >> ", end="")
-            #u.print()            
+            #u.print()
             if (isinstance(u, UsfmC) or 
                 isinstance(u, UsfmP) or 
                 isinstance(u, UsfmS) or
@@ -266,7 +270,7 @@ class Book:
                 isinstance(u, UsfmMT) or
                 isinstance(u, UsfmR)):
                 # Do nothing but append the USFM to our new list
-                # It should not be followed by a non-marker line
+                # It should not be followed by a non-marker line...this is a false statement...\s1 can be split across lines!
                 newu.append(u)
             elif (isinstance(u, UsfmQ) or
                   isinstance(u, UsfmM)):
@@ -278,14 +282,14 @@ class Book:
                     print("ERROR: Unanticipated case: ", end="")
                     u.print()
                 else: # The line does not start with a marker, so append to end of prior
-                    #print(f"{u.marker} {u.arg} {u.content}")
+                    #print(f"INFO: {u.marker} {u.arg} {u.content}")
                     # If you get an index out of range error here, twice it has been because the 
                     # file has a byte-order mark at the beginning before the \id marker. Remove that
                     # with python3 ../../usfmtools/pyusfm/removeBOM.py and you should be all set.
                     newu[-1].append(u)
                     #newu[-1].content = newu[-1].content.replace("- ", "")   # Does not work right for -- sequence
                     #re.sub(pattern, replacement, string, count=0, flags=0)
-                    # For lines that end with a dash (in Makusi), we remove the - and combine the two word parts.
+                    # For lines that end with a dash (in Makusi and Wampis), we remove the - and combine the two word parts.
                     # They are hyphenated and in the USFM we need to get rid of the hyphen--and NOT the preceding character!
                     newu[-1].content = regex.sub("([^-])- ", "\\1", newu[-1].content)
 
