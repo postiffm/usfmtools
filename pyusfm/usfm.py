@@ -102,11 +102,11 @@ class UsfmMT(Usfm):
 
 class UsfmId(Usfm):
     # \id MAT <other text may appear here>
-    def __init__(self, Marker, Id, OtherText):
-        super().__init__(Marker, Id, OtherText)
+    def __init__(self, Marker, Id, Content):
+        super().__init__(Marker, Id, Content)
         self.id = Id
     def print(self):
-        print(f'{self.marker} {self.id}')
+        print(f'{self.marker} {self.id} {self.content}')
 
 class UsfmM(Usfm):
     # \m text
@@ -117,7 +117,7 @@ class UsfmM(Usfm):
 
 class UsfmR(Usfm):
     # \r text like 
-    # \r (1,19-12,50) (after an \ms)
+    # \r (1,19-12,50) (or \mr after an \ms)
     # or 
     # \r (Mt 3,11-12; Mr 1,7-8; Nk 3,15-17) (after a \s1 line)
     def __init__(self, Marker, Content):
@@ -195,6 +195,8 @@ class Book:
             elif (marker == "\\m"):
                 u = UsfmM(marker, str(' '.join(words)))
             elif (marker == "\\r"):
+                u = UsfmR(marker, str(' '.join(words)))
+            elif (marker == "\\mr"):
                 u = UsfmR(marker, str(' '.join(words)))
             elif (marker[0] == "\\"):
                 print("New UNKNOWN Marker: ", marker)
