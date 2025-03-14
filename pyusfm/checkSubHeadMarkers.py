@@ -23,14 +23,15 @@ def main(files):
 
     for filename in files:
         if (os.path.exists(filename)):
+            print(f"{filename}")
             bibl.loadBook(filename)
-            # Rename file to backup
-            os.rename(filename, filename+".bak")
+            # If running fixSubHeads, rename file to backup
+            #os.rename(filename, filename+".bak")
             bk = bibl.lastBook()
-            bk.fixSubHeads()
-            f = open(filename, "w")
-            bk.print(f)
-            f.close()
+            bk.checkSubHeads()
+            #f = open(filename, "w")
+            #bk.print(f)
+            #f.close()
         else:
             print(f"ERROR: Cannot find {filename}")
 

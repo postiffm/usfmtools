@@ -343,11 +343,21 @@ class Book:
         # Now update the final USFM
         self.usfms = newu
 
-    def fixSubHeads(self):
+    def checkSubHeads(self):
         # This originated with the Kabiye project when we learned that it was
         # making the same mistake we had made elsewhere--putting \s1 before \c
         # which has to be swapped.
         # Run this AFTER combineLines has combined everything
+        for idx, u in enumerate(self.usfms):
+            if (isinstance(u, UsfmC)):
+                # Check if preceding was a \s#. If so, print message and put this one
+                # BEFORE that \s# line.
+                if (isinstance(self.usfms[-1], UsfmS)):
+                    print(f"line {idx+1}: \\c after \\s# in {u}")
+    # End checkSubHeads
+
+    def fixSubHeads(self):
+        # Same as above but this actually repairs the USFM so \s# comes after \c
         newu = [] # Since we have to swap lines, just build a new list of usfms
         for idx, u in enumerate(self.usfms):
             #print("Processing USFM >> ", end="")
@@ -368,6 +378,7 @@ class Book:
 
         # Now update the final USFM
         self.usfms = newu
+    # End fixSubHeads
 
     def print(self, f=sys.stdout):
         for u in self.usfms:
