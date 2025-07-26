@@ -118,10 +118,10 @@ def extraSplit(words:[]) -> []:
         # The idea is to take a string like \x*cule: and
         # ultimately split it into \x* and cule: but there 
         # are different combinations of possibilities
-        subwords = regex.split('([\*\\\\])', word)
+        subwords = regex.split('([\\*\\\\])', word)
         debug("DEBUGC " + '~'.join(subwords))
         for subword in subwords:
-            debug("DEBUGD token: " + subword)
+            debug("  DEBUGD token: " + subword)
             if (subword == ''):
                 pass
             elif (subword == '\\'):
@@ -167,7 +167,7 @@ def convertUSFMToAccordance(filename, paragraphMarkers):
     # glossary or formatting markers. NOTE: The next line of code is critical. If there
     # is a marker that I have not seen before, I may lose words from the original USFM
     # and verses can appear to be truncated. Watch out for this in the future.
-    markersToIgnore = ['li', 'q1', 'q2', 'qt', 'm', 'w', 'pi', 'pi2', 'b', 'nb', 'mi']
+    markersToIgnore = ['li', 'q', 'q1', 'q2', 'qt', 'm', 'w', 'pi', 'pi2', 'b', 'nb', 'mi']
     # The current word list
     wordlist = []
     file = open(filename,'r')
@@ -188,6 +188,7 @@ def convertUSFMToAccordance(filename, paragraphMarkers):
         # Handle USFM codes (by noting them or dropping them)
         while words:
             word = words.pop(0)
+            debug("DEBUGK " + word)
             markerMatch = markerPatternCompiled.search(word)
             #print("DEBUG2: " + "Word=" + word + " " + ' '.join(words))
             # Capture context of book chapter:verse
@@ -228,11 +229,13 @@ def convertUSFMToAccordance(filename, paragraphMarkers):
                 mode = NORMAL
             # Capture whether we are starting a new paragraph...for future use
             elif (word == "\\p"):
+                debug("DEBUGM para marker " + word)
                 newParagraph = True
             elif (mode != PREFIX and markerMatch != None): # word is a USFM marker
+                debug("DEBUGM usfm marker " + word)
                 usfmCode = markerMatch.group(1)
                 if ('*' in usfmCode): # end marker
-                    debug(f"Found endmarker \{usfmCode} in {word}")
+                    debug(f"Found endmarker \\{usfmCode} in {word}")
                     mode = NORMAL
                 elif (usfmCode == "w"):
                     # Special case: \w Kéiert ëm|ëmkéieren\w*,
@@ -247,6 +250,7 @@ def convertUSFMToAccordance(filename, paragraphMarkers):
                     #print(f"Found regular marker \{usfmCode} in {word}")
                     mode = MARKER
             elif (mode == GLOSSARY):
+                debug("DEBUGM glossary mode " + word)
                 # Within \w ... \w*, we have to watch for the | symbol because
                 # it specifies the lexical form of a word.
                 #print("In GLOSSARY mode...")
@@ -263,7 +267,10 @@ def convertUSFMToAccordance(filename, paragraphMarkers):
                     printWord(word)
             elif (mode == NORMAL):
                 # The fall-through case is simply to print the word
+                debug("DEBUGM printing " + word)
                 printWord(word)
+            else:
+                debug("DEBUGM unknown case " + word)
             
     file.close()
 
