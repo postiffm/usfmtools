@@ -5,6 +5,10 @@ from difflib import SequenceMatcher
 # (insertions, deletions, or substitutions) required to change one text into
 # another. s1 is the known-good string in my case, and s2 is the AI-generated
 # variant.
+#
+# The python difflib similarity ratio uses the Ratcliff/Obershelp algorithm. 
+# This algorithm determines the ratio of matching characters between the two sequences, 
+# normalized to a value between 0 and 1.
 
 def main():
     #s1 = input("Enter the first string: ")
