@@ -9,10 +9,6 @@ import io
 # Each file is backed up first so as not to lose the original data.
 
 # Change the following characters
-# << to U+201C left  double quotation mark
-# >> to U+201D right double quotation mark
-# < to  U+2018 left  single quotation mark
-# > to  U+2019 right single quotation mark
 
 # To do:
 # Fix error handling. If .bak file already exists, do something smart.
@@ -40,6 +36,7 @@ for file in sys.argv:
 	fo = io.open(file, mode="w", encoding="utf-8", newline='')
 
 	# To deal with the escapes, see stackoverflow.com/questions/58328587/ppython-3-7-4-re-error-bad-escape-s-at-position-0
+	# Warning about \z as an invalid escape sequence
 	newStr = "\\\zhash \u00ba \\\zhash*"
 	print(f"newStr = {newStr}")
 
