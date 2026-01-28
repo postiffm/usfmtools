@@ -147,6 +147,34 @@ def extraSplit(words:[]) -> []:
     debug("DEBUGJ: " + '~'.join(output))
     return output
 
+# A helper to remove, say, footnotes, so from \f to \f*
+def remove_between(lst, start, end):
+    """
+    Remove start and end strings from the list, along with all items between them.
+    
+    Args:
+        lst: The list to modify
+        start: The first string to remove
+        end: The last string to remove
+    
+    Returns:
+        A new list with the specified elements removed
+    """
+    try:
+        start_index = lst.index(start)
+        end_index = lst.index(end)
+        
+        # Ensure start comes before end
+        if start_index > end_index:
+            start_index, end_index = end_index, start_index
+        
+        # Return list excluding elements from start_index to end_index (inclusive)
+        return lst[:start_index] + lst[end_index + 1:]
+    
+    except ValueError:
+        # If either string isn't found, return the original list
+        return lst[:]
+
 # Special flag to indicate a need to print the first line in a special way
 justStarted = True
 
@@ -158,6 +186,7 @@ def convertUSFMToAccordance(filename, paragraphMarkers, textCriticalMarkers):
     PREFIX = 2 # file header info
     GLOSSARY = 3 # within a \w ... \w* section
     FOOTNOTE = 4 # within a \f ... \f* section
+    GLOSSARY_SILENT = 5 # within a \w ... \w* section, the text after |word
     mode = PREFIX
     newParagraph = False
     usfmCode = ""
@@ -185,6 +214,23 @@ def convertUSFMToAccordance(filename, paragraphMarkers, textCriticalMarkers):
         # Some words have usfm codes abutted to them with no space: justify\w*
         # So we need to split those apart before proceeding below.
         words = extraSplit(words)
+
+        # Declutter the USFM some to simplify for following much more complex loop
+        # Remove \+w...\+w* pairs, etc. It is the nested usfm markers that are killing me.
+        #if ((word.find('\+w') != -1) and (word.find('\+w*') != -1)): # \+w pair found
+        if ('\\+w' in words and '\\+w*' in words):
+            #print("DEBUG2: Found \+w pair and removing")
+            words.remove('\\+w')
+            words.remove('\\+w*')
+        if ('\\qt' in words and '\\qt*' in words):
+            #print("DEBUG2: Found \qt pair and removing")
+            words.remove('\\qt')
+            words.remove('\\qt*')
+        if ('\\tl' in words and '\\tl*' in words):
+            #print("DEBUG2: Found \qt pair and removing")
+            words.remove('\\tl')
+            words.remove('\\tl*')
+        words = remove_between(words, '\\f', '\\f*')
 
         # Handle USFM codes (by noting them or dropping them)
         while words:
@@ -245,6 +291,8 @@ def convertUSFMToAccordance(filename, paragraphMarkers, textCriticalMarkers):
                         mode = NORMAL
                     elif (mode == GLOSSARY and usfmCode == "w*"):
                         mode = NORMAL
+                    elif (mode == GLOSSARY_SILENT and usfmCode == "w*"):
+                        mode = NORMAL
                     else:
                         # Keep the footnote mode going
                         pass
@@ -275,11 +323,15 @@ def convertUSFMToAccordance(filename, paragraphMarkers, textCriticalMarkers):
                     # of which I want the first element, before the |.
                     debug("DEBUGO glossary found | in word " + word)
                     glowords = word.split('|')
-                    debug("DEBUGO I think the right word before | is " + words[0])
+                    debug("DEBUGO I think the right word before | is " + glowords[0])
                     printWord(glowords[0])
-                    #mode = MARKER
+                    mode = GLOSSARY_SILENT
                 else:
                     printWord(word)
+            elif (mode == GLOSSARY_SILENT):
+                # The rest of the entry, like in \w Galili|Galili, Genesareth le Ṭaiberias Tili\w*
+                # everything after the | has to be dropped
+                pass
             elif (mode == FOOTNOTE):
                 debug("DEBUGP footnote mode " + word)
                 # Do not output anything until \f* is found
@@ -314,7 +366,7 @@ def printWord(word):
 @click.option('--debug/--quiet', default=False, help='Default false. If set, turns on debugging.')
 @click.argument('files', nargs=-1)
 def main(para, tc, debug, files):
-    print(f"Running with tc={tc} and debug={debug}")
+    #print(f"Running with tc={tc} and debug={debug}")
     global DEBUG
     if (debug == True):
         DEBUG = 1
