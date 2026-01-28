@@ -30,7 +30,8 @@ def main(files):
             bk.combineLines()
             #bibl.printInternals()
             # And turn right around and print it
-            bk.print(filename+".new")
+            f = open(filename+".new", "w")
+            bk.print(f)
 
 if __name__ == '__main__':
     main()
