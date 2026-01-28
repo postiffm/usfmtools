@@ -150,13 +150,14 @@ def extraSplit(words:[]) -> []:
 # Special flag to indicate a need to print the first line in a special way
 justStarted = True
 
-def convertUSFMToAccordance(filename, paragraphMarkers):
+def convertUSFMToAccordance(filename, paragraphMarkers, textCriticalMarkers):
     """Scans the entire USFM and re-formats for Accordance"""
     # Modes that the usfm scanner is in (parsing mode)
     NORMAL = 0 # regular Bible text
     MARKER = 1 # USFM marker
     PREFIX = 2 # file header info
     GLOSSARY = 3 # within a \w ... \w* section
+    FOOTNOTE = 4 # within a \f ... \f* section
     mode = PREFIX
     newParagraph = False
     usfmCode = ""
@@ -194,11 +195,15 @@ def convertUSFMToAccordance(filename, paragraphMarkers):
             # Capture context of book chapter:verse
             if (word == "\\id"):
                 bookid = words.pop(0)
-                # We don't process the glossary book
+                # We don't process the glossary book and other similar books
                 if (bookid == "XXA" or bookid == "XXB" or bookid == "FRT" or bookid == "GLO" or 
                     bookid == "XXC" or bookid == "XXD" or bookid == "INT" or bookid == "BAK" or
                     bookid == "XXE" or bookid == "XXF" or bookid == "XXG" or bookid == "CNC" or
-                    bookid == "TDX" or bookid == "OTH"):
+                    bookid == "TDX" or bookid == "OTH" or bookid == "TOB" or bookid == "JDT" or
+                    bookid == "ESG" or bookid == "WIS" or bookid == "SIR" or bookid == "BAR" or
+                    bookid == "1MA" or bookid == "2MA" or bookid == "1ES" or bookid == "MAN" or
+                    bookid == "PS2" or bookid == "3MA" or bookid == "2ES" or bookid == "4MA" or
+                    bookid == "DAG"):
                     file.close()
                     return
                 book = canonicalBookName[bookid]
@@ -232,11 +237,20 @@ def convertUSFMToAccordance(filename, paragraphMarkers):
                 debug("DEBUGM para marker " + word)
                 newParagraph = True
             elif (mode != PREFIX and markerMatch != None): # word is a USFM marker
-                debug("DEBUGM usfm marker " + word)
+                debug("DEBUGN usfm marker " + word)
                 usfmCode = markerMatch.group(1)
                 if ('*' in usfmCode): # end marker
                     debug(f"Found endmarker \\{usfmCode} in {word}")
-                    mode = NORMAL
+                    if (mode == FOOTNOTE and usfmCode == "f*"):
+                        mode = NORMAL
+                    elif (mode == GLOSSARY and usfmCode == "w*"):
+                        mode = NORMAL
+                    else:
+                        # Keep the footnote mode going
+                        pass
+                elif (usfmCode == "f" or usfmCode == "fr" or usfmCode == "ft" or usfmCode == "fw"):
+                    # \f ... \f* with possibily a bunch of other \fr, \ft, etc. inside them
+                    mode = FOOTNOTE
                 elif (usfmCode == "w"):
                     # Special case: \w Kéiert ëm|ëmkéieren\w*,
                     # or: \w Léiermeeschtere vum Gesetz|Léiermeeschter vum Gesetz\w*
@@ -250,27 +264,35 @@ def convertUSFMToAccordance(filename, paragraphMarkers):
                     #print(f"Found regular marker \{usfmCode} in {word}")
                     mode = MARKER
             elif (mode == GLOSSARY):
-                debug("DEBUGM glossary mode " + word)
+                debug("DEBUGO glossary mode " + word)
                 # Within \w ... \w*, we have to watch for the | symbol because
                 # it specifies the lexical form of a word.
-                #print("In GLOSSARY mode...")
                 if (word.find('|') != -1): # | found
                     # We must strip the |... off, print the first part,
                     # and then drop into mode=MARKER so that the 
                     # rest of the words up to \w* are dropped. The code
                     # below splits the word on |, and this returns a list,
                     # of which I want the first element, before the |.
-                    strippedWord = word.split('|', 1)[0]
-                    printWord(strippedWord)
-                    mode = MARKER
+                    debug("DEBUGO glossary found | in word " + word)
+                    glowords = word.split('|')
+                    debug("DEBUGO I think the right word before | is " + words[0])
+                    printWord(glowords[0])
+                    #mode = MARKER
                 else:
                     printWord(word)
+            elif (mode == FOOTNOTE):
+                debug("DEBUGP footnote mode " + word)
+                # Do not output anything until \f* is found
             elif (mode == NORMAL):
                 # The fall-through case is simply to print the word
-                debug("DEBUGM printing " + word)
-                printWord(word)
+                if (textCriticalMarkers == False and (word == '⸂' or word == '⸃')):
+                    # Do not print these
+                    debug("DEBUGQ NOT printing " + word)
+                else:
+                    debug("DEBUGQ printing " + word)
+                    printWord(word)
             else:
-                debug("DEBUGM unknown case " + word)
+                debug("DEBUGR unknown case " + word)
             
     file.close()
 
@@ -288,11 +310,17 @@ def printWord(word):
 
 @click.command()
 @click.option('--para/--no-para', default=True, help='Default true. If set, turns on paragraph markers in output.')
+@click.option('--tc/--no-tc', default=True, help='Default true. If set, turns on text critical marks ⸂ and ⸃.')
+@click.option('--debug/--quiet', default=False, help='Default false. If set, turns on debugging.')
 @click.argument('files', nargs=-1)
-def main(para, files):
+def main(para, tc, debug, files):
+    print(f"Running with tc={tc} and debug={debug}")
+    global DEBUG
+    if (debug == True):
+        DEBUG = 1
     """Given USFM input files, creates a single Accordance-compatible import text file."""
     for filename in files:
-        convertUSFMToAccordance(filename, para)
+        convertUSFMToAccordance(filename, para, tc)
 
 if __name__ == '__main__':
     main()
