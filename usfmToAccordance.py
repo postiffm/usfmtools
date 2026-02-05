@@ -231,6 +231,7 @@ def convertUSFMToAccordance(filename, paragraphMarkers, textCriticalMarkers):
             words.remove('\\tl')
             words.remove('\\tl*')
         words = remove_between(words, '\\f', '\\f*')
+        words = remove_between(words, '\\x', '\\x*')
 
         # Handle USFM codes (by noting them or dropping them)
         while words:
