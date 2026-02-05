@@ -144,7 +144,7 @@ def extraSplit(words:[]) -> []:
         if (hold != ""): # A straggler we need to output
             debug(("DEBUGI        add to final output: " + hold))
             output.append(hold)
-    debug("DEBUGJ: " + '~'.join(output))
+    debug("DEBUGJ " + '~'.join(output))
     return output
 
 # A helper to remove, say, footnotes, so from \f to \f*
@@ -197,7 +197,7 @@ def convertUSFMToAccordance(filename, paragraphMarkers, textCriticalMarkers):
     # glossary or formatting markers. NOTE: The next line of code is critical. If there
     # is a marker that I have not seen before, I may lose words from the original USFM
     # and verses can appear to be truncated. Watch out for this in the future.
-    markersToIgnore = ['li', 'q', 'q1', 'q2', 'qt', 'm', 'w', 'pi', 'pi2', 'b', 'nb', 'mi']
+    markersToIgnore = ['li', 'li1', 'q', 'q1', 'q2', 'qt', 'm', 'w', 'pi', 'pi2', 'b', 'nb', 'mi', 'pmo', 'add', 'add*']
     # The current word list
     wordlist = []
     file = open(filename,'r')
@@ -207,7 +207,7 @@ def convertUSFMToAccordance(filename, paragraphMarkers, textCriticalMarkers):
         if not line.strip():
             continue;
 
-        debug("DEBUG1: " + line)
+        debug("DEBUG1 " + line)
 
         # Disregard line/verse boundaries so that repeats can cross lines/verses
         words = line.split()
@@ -317,15 +317,24 @@ def convertUSFMToAccordance(filename, paragraphMarkers, textCriticalMarkers):
                 # Within \w ... \w*, we have to watch for the | symbol because
                 # it specifies the lexical form of a word.
                 if (word.find('|') != -1): # | found
-                    # We must strip the |... off, print the first part,
-                    # and then drop into mode=MARKER so that the 
-                    # rest of the words up to \w* are dropped. The code
+                    # Case 1 If the usfm token is "biblos|"" then 
+                    # strip the |... off, print the first part,
+                    # and then drop into mode=GLOSSARY_SILENT so that the 
+                    # rest of the words up to \w* are dropped. 
+                    # Case 2 If the prior usfm token and this one looked like 
+                    # "biblos |" with a space, then 
+                    # what we are looking at right now is the | by itself. The code
                     # below splits the word on |, and this returns a list,
-                    # of which I want the first element, before the |.
+                    # of which I want the first element, before the | if in case 1.
+                    # or nothing if in case 2.
                     debug("DEBUGO glossary found | in word " + word)
-                    glowords = word.split('|')
-                    debug("DEBUGO I think the right word before | is " + glowords[0])
-                    printWord(glowords[0])
+                    if (word[0] == "|"):
+                        # don't print
+                        debug("DEBUGO1 There is no word before |")
+                    else:
+                        glowords = word.split('|')
+                        debug("DEBUGO2 The right word before | is " + glowords[0])
+                        printWord(glowords[0])
                     mode = GLOSSARY_SILENT
                 else:
                     printWord(word)
