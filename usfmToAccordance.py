@@ -254,6 +254,10 @@ def convertUSFMToAccordance(filename, paragraphMarkers, textCriticalMarkers):
                     file.close()
                     return
                 book = canonicalBookName[bookid]
+            elif (word == "\\periph"):
+                # We do not handle any peripheral books
+                file.close()
+                return
             elif (word == "\\c"):
                 if not words:
                     error(f"Missing chapter number in {filename}:{lineno}")
