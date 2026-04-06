@@ -64,10 +64,10 @@ def main():
         # From here, we know the verse address is in both dictionaries
         line1 = verses1[addr].rstrip('\n')
         line2 = verses2[addr].rstrip('\n')
-        # Below makes about 0.2 difference
+        # Standardizing everything to lowercase makes about 0.2 difference
         line1 = line1.lower()
         line2 = line2.lower()
-        # Below makes a similar additional difference
+        # Matching quote-style makes a similar additional difference
         line1 = straighten_quotes(line1)
         line2 = straighten_quotes(line2)
         #print(f"Comparing {line1}    to\n          {line2}")
