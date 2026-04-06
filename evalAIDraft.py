@@ -77,8 +77,8 @@ folder = sys.argv[1] if len(sys.argv) > 1 else "."
 # Walk through all Bible books in files. Simplify the USFM
 # to the Accordance format that we have been using as a basis
 # of comparison. Then run the levenshteinFiles.py script, which
-# is a bit misnamed because it also doesa  chrF3 calculation
-# as well as 
+# is a bit misnamed because it also does a chrF3 calculation
+# as well as the difflib SequenceMatcher comparison.
 
 for goodF, aiF in files:
     goodAcc = goodF.replace("SFM", "acc")
