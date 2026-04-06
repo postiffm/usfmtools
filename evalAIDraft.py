@@ -4,14 +4,14 @@ import sys
 
  # How to Set up environment
 # First time:
-# python3 -m venv .ubuvenv or .wslvenv or .deskvenv
+# python3 -m venv .ubuvenv or .wslvenv or .deskvenv (henceforth I will call this .venv)
+# I mention different names because of cross-platform problems. You cannot use your ubuntu
+# env with wsl if you are in a shared folder provided by (say) Dropbox
 # pip3 install -r evalRequirements.txt
-# On Ubuntu:
-# source .ubuvenv/bin/activate
-# On Windows Laptop:
-# source .wslvenv/bin/activate
-# pip3 install evaluate sacrebleu levenshtein
-# Thereafter, just do the source command appropriate for the platform.
+# The important components of this are evaluate sacrebleu Levenshtein
+
+# Every time you log in:
+# source .venv/bin/activate
 
 # Usage:
 # Update the files list below with the files you want to process
