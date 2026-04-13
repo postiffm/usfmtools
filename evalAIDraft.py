@@ -14,58 +14,19 @@ import sys
 # source .venv/bin/activate
 
 # Usage:
-# Update the files list below with the files you want to process
+# Update the files list in files.py in the current working directory with the files you want to process
 # python3 evalAIDraft.py
 
-# Shorthand for some scripts
-USFMTOOLS = "../../AndroidApps/usfmtools"
+# Shorthand for some scripts - I need to make this path independent 
+USFMTOOLS = "../../../AndroidApps/usfmtools"
 USFMtoACC = f"{USFMTOOLS}/usfmToAccordance.py"
 LEV = f"{USFMTOOLS}/levenshteinFiles.py"
 
-# List of tuples - good file, AI-draft file from lrl-engine
-files = [
-("08RUTCSV.SFM", "rut_bsb_falam_04042026.usfm"),
-("32JONCSV.SFM", "jon_bsb_falam_04052026.usfm"),
-    ("01GENCSV.SFM", ""),
-    ("02EXOCSV.SFM", ""),
-    ("03LEVCSV.SFM", ""),
-    ("04NUMCSV.SFM", ""),
-    ("05DEUCSV.SFM", ""),
-    ("06JOSCSV.SFM", ""),
-    ("07JDGCSV.SFM", ""),
-    ("08RUTCSV.SFM", ""),
-    ("091SACSV.SFM", ""),
-    ("102SACSV.SFM", ""),
-    ("111KICSV.SFM", ""),
-    ("122KICSV.SFM", ""),
-    ("131CHCSV.SFM", ""),
-    ("142CHCSV.SFM", ""),
-    ("15EZRCSV.SFM", ""),
-    ("16NEHCSV.SFM", ""),
-    ("17ESTCSV.SFM", ""),
-    ("18JOBCSV.SFM", ""),
-    ("19PSACSV.SFM", ""),
-    ("20PROCSV.SFM", ""),
-    ("21ECCCSV.SFM", ""),
-    ("22SNGCSV.SFM", ""),
-    ("23ISACSV.SFM", ""),
-    ("24JERCSV.SFM", ""),
-    ("25LAMCSV.SFM", ""),
-    ("26EZKCSV.SFM", ""),
-    ("27DANCSV.SFM", ""),
-    ("28HOSCSV.SFM", ""),
-    ("29JOLCSV.SFM", ""),
-    ("30AMOCSV.SFM", ""),
-    ("31OBACSV.SFM", ""),
-    ("32JONCSV.SFM", ""),
-    ("33MICCSV.SFM", ""),
-    ("34NAMCSV.SFM", ""),
-    ("35HABCSV.SFM", ""),
-    ("36ZEPCSV.SFM", ""),
-    ("37HAGCSV.SFM", ""),
-    ("38ZECCSV.SFM", ""),
-    ("39MALCSV.SFM", ""),
-]
+# Add the current working directory to the module search path
+sys.path.insert(0, os.getcwd())
+# This allows the import below from the current directory to work
+# List of tuples - (good file SFM, AI-draft SFM)... file from lrl-engine
+from files import files
 
 folder = sys.argv[1] if len(sys.argv) > 1 else "."
 
@@ -82,9 +43,9 @@ folder = sys.argv[1] if len(sys.argv) > 1 else "."
 
 for goodF, aiF in files:
     goodAcc = goodF.replace("SFM", "acc")
-    aiAcc = aiF.replace("usfm", "acc")
+    aiAcc = aiF.replace("SFM", "acc")
     with open(goodAcc, 'w') as f:
         subprocess.run(["python3", USFMtoACC, "--no-para", goodF], stdout=f)   # good SFM > acc
     with open(aiAcc, 'w') as f:
-        subprocess.run(["python3", USFMtoACC, "--no-para", aiF], stdout=f)     # ai usfm > acc
+        subprocess.run(["python3", USFMtoACC, "--no-para", aiF], stdout=f)     # ai SFM > acc
     subprocess.run(["python3", LEV, goodAcc, aiAcc])
