@@ -3,6 +3,26 @@ from difflib import SequenceMatcher
 import sys
 from evaluate import load
 import re
+import nltk
+from nltk.tokenize import word_tokenize
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+
+# Just do this the first time
+#nltk.download('punkt_tab')
+
+# Levenshtein
+# Python similarity metric
+# chrF3 For meaning, see https://huggingface.co/spaces/evaluate-metric/chrf
+# BLEU score 
+# (C) Matt Postiff, 2026
+
+# Python environment setup
+# python3 -m venv .env
+# .env/bin/pip install Levenshtein
+# .env/bin/pip install evaluate
+# .env/bin/pip install sacrebleu
+# You can also source .env/bin/activate (and deactivate when done) so don't have to type .env/bin/ all the time.
+# This /should/ be taken care of by the evalAIDraft.py wrapper script
 
 # Usage: python3 levenshteinFiles.py goldStandard AIDraft
 # Assumes the files are in .acc format from usfmToAccordance
@@ -12,7 +32,7 @@ def read_file(filename):
         return f.read()
     
 def read_verses(filename):
-    verses = dict()  # Map from verse address to text
+    verses = dict()  # Map from verse address to text so that we can line up verses between goldStandard and AIDraft
     with open(filename, "r", encoding="utf-8") as f:
         #return f.readlines()
         for ln in f.readlines():
@@ -43,7 +63,7 @@ def main():
     text2 = read_file(file2)
 
     distance = Levenshtein.distance(text1, text2)
-    print(f"The Levenshtein distance between '{file1}' and '{file2}' is: {distance}")
+    print(f"{file1} and {file2} Levenshtein distance is: {distance}")
 
     verses1 = read_verses(file1)
     verses2 = read_verses(file2)
@@ -53,8 +73,9 @@ def main():
     total_chars = 0
     total_similarity_ratio = 0
     versesNotFound = 0
-    numLines = 0
+    totalVersesCompared = 0
     chrF3TotalScore = 0
+    total_bleu = 0
 
     for addr in verses1:
         if (addr not in verses2):  
@@ -87,8 +108,15 @@ def main():
         #print(f"predicted_text: {prediction}")
         lineScore = results["score"]
         #print(f"chrf: {lineScore}")
-        numLines += 1
+        totalVersesCompared += 1
         chrF3TotalScore += lineScore
+
+        # Bleu Score
+        prediction = word_tokenize(line2)
+        reference = [word_tokenize(line1)]
+        score = sentence_bleu(reference, prediction, smoothing_function=SmoothingFunction().method1)
+        total_bleu += score
+        #print(f"score={score} {type(score)} Bleu={(score):.6e} total_bleu={(total_bleu):0.6e}")
 
         # Python's difflib "similarity" algorithm. It uses a modified version of the Ratcliff and Obershelp "gestalt 
         # pattern matching" algorithm. It works by recursively finding the longest contiguous matching subsequences 
@@ -98,13 +126,14 @@ def main():
         total_similarity_ratio += similarity_ratio
         #print(f"\tSimilarity Ratio: {similarity_ratio:.1f}")
 
-    max_len = len(verses1)
-    print(f"Total sum of line-by-line Levenshtein distances: {total_distance} and average {(total_distance/max_len):.1f}")
+    totalVerses = len(verses1)
     pctCharsToChange = (total_distance/total_chars*100)
-    print(f"Length of file2 is {total_chars}, requiring a change of {pctCharsToChange:.1f}% of characters or Lev similarity = {(100-pctCharsToChange):.1f}%")
-    print(f"chrF3 total score = {chrF3TotalScore:.1f} and average = {(chrF3TotalScore/numLines):.1f}")
-    print(f"{versesNotFound} verses are not present in the AI candidate")
-    print(f"Average line-based similarity {(total_similarity_ratio/max_len):.1f} out of 100")
+    print(f"    {versesNotFound} verses are not present in the AI candidate out of total of {totalVerses} verses and {totalVersesCompared} lines")
+    print(f"    Sum of line-by-line Levenshtein distances: {total_distance} and average {(total_distance/totalVerses):.1f}")
+    print(f"    Length of file2 is {total_chars}, requiring a change of {pctCharsToChange:.1f}% of characters or Lev similarity = {(100-pctCharsToChange):.1f}%")
+    print(f"    chrF3 total score = {chrF3TotalScore:.1f} and average = {(chrF3TotalScore/totalVersesCompared):.1f}")
+    print(f"    Average BLEU Score: {(total_bleu/totalVerses):.4f}") # Output: ~1.0000 for perfect match
+    print(f"    Average line-based similarity {(total_similarity_ratio/totalVerses):.1f} out of 100")
     print("--------------------")
 
 if __name__ == "__main__":

@@ -2,7 +2,9 @@ import os
 import subprocess
 import sys
 
- # How to Set up environment
+# Wrapper to run levenshteinFiles.py, which now does way more than just the levenshtein algorithm.
+
+# How to Set up environment
 # First time:
 # python3 -m venv .ubuvenv or .wslvenv or .deskvenv (henceforth I will call this .venv)
 # I mention different names because of cross-platform problems. You cannot use your ubuntu
@@ -18,7 +20,7 @@ import sys
 # python3 evalAIDraft.py
 
 # Shorthand for some scripts - I need to make this path independent 
-USFMTOOLS = "../../../AndroidApps/usfmtools"
+USFMTOOLS = "../../AndroidApps/usfmtools"
 USFMtoACC = f"{USFMTOOLS}/usfmToAccordance.py"
 LEV = f"{USFMTOOLS}/levenshteinFiles.py"
 

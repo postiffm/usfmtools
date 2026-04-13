@@ -21,12 +21,14 @@ httpx==0.28.1
 huggingface==0.0.1
 huggingface_hub==1.9.0
 idna==3.11
+joblib==1.5.3
 Levenshtein==0.27.3
 lxml==6.0.2
 markdown-it-py==4.0.0
 mdurl==0.1.2
 multidict==6.7.1
 multiprocess==0.70.19
+nltk==3.9.4
 numpy==2.4.4
 packaging==26.0
 pandas==3.0.2
